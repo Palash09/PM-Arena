@@ -1,0 +1,179 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CompanyStage {
+  EARLY
+  GROWTH
+  SCALE
+  TURNAROUND
+}
+
+enum DecisionType {
+  STRATEGY
+  PRIORITIZATION
+  TEAM
+  LAUNCH
+  PRICING
+  GROWTH
+}
+
+enum Difficulty {
+  ROOKIE
+  PRO
+  WORLD_CLASS
+  LEGENDARY
+}
+
+enum SkillKey {
+  strategy
+  execution
+  leadership
+  growth
+  analytics
+  communication
+}
+
+model UserProfile {
+  id               String        @id @default(cuid())
+  name             String
+  title            String
+  level            Int
+  rank             String
+  credibilityScore Int
+  streak           Int
+  wins             Int
+  retries          Int
+  focusAreas       Json
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  stats            SkillStat[]
+  attempts         GameAttempt[]
+}
+
+model UserAccount {
+  id           String          @id @default(cuid())
+  email        String          @unique
+  passwordHash String
+  passwordSalt String
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  sessions     AuthSession[]
+  progress     SavedProgress?
+}
+
+model AuthSession {
+  id        String      @id @default(cuid())
+  tokenHash String      @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime    @default(now())
+  user      UserAccount @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model SavedProgress {
+  id        String      @id @default(cuid())
+  userId    String      @unique
+  data      Json
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  user      UserAccount @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SkillStat {
+  id        String      @id @default(cuid())
+  key       SkillKey
+  label     String
+  value     Int
+  profileId String
+  profile   UserProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, key])
+}
+
+model PlayerCard {
+  id            String   @id
+  slug          String   @unique
+  name          String
+  company       String
+  role          String
+  archetype     String
+  rating        Int
+  unlocked      Boolean
+  avatarHue     String
+  signatureMove String
+  quote         String
+  sourceFile    String
+  stats         Json
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Scenario {
+  id               String           @id
+  slug             String           @unique
+  title            String
+  company          String
+  guest            String
+  difficulty       Difficulty
+  stage            CompanyStage
+  decisionType     DecisionType
+  recommendedSkill SkillKey
+  shortPitch       String
+  context          String
+  stakes           String
+  actualOutcome    String
+  expertReasoning  String
+  sourceQuote      String
+  sourceFile       String
+  frameworks       Json
+  options          ScenarioOption[]
+  attempts         GameAttempt[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+model ScenarioOption {
+  id                 String   @id
+  label              String
+  title              String
+  summary            String
+  pros               Json
+  tradeoffs          Json
+  frameworkSignals   Json
+  isHistoricalChoice Boolean  @default(false)
+  scenarioId         String
+  scenario           Scenario @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+
+  @@unique([scenarioId, label])
+}
+
+model GameAttempt {
+  id                String      @id @default(cuid())
+  profileId         String
+  scenarioId        String
+  optionId          String
+  reasoning         String
+  score             Int
+  choiceAlignment   Int
+  reasoningAlignment Int
+  frameworkCoverage Int
+  completeness      Int
+  verdict           String
+  delta             Json
+  coaching          Json
+  createdAt         DateTime    @default(now())
+  profile           UserProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  scenario          Scenario    @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+
+  @@index([profileId, createdAt])
+  @@index([scenarioId, createdAt])
+}

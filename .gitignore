@@ -1,0 +1,20 @@
+.next
+node_modules
+.env
+.env.local
+coverage
+dist
+tmp
+*.log
+prisma/dev.db
+
+.DS_Store
+.claude/
+
+# Local source/reference artifacts. App-ready assets live in public/.
+Background.png
+Leaders.png
+ChatGPT Image *.png
+Screenshot *.png
+RORK-Max_PM-Decision/
+lennys-newsletterpodcastdata-starter/
