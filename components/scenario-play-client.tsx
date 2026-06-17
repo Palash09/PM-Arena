@@ -388,6 +388,7 @@ export function ScenarioPlayClient({ scenario }: ScenarioPlayClientProps) {
           name="reasoning"
           value={reasoning}
           onChange={(event) => setReasoning(event.target.value.slice(0, 400))}
+          required
           rows={5}
           placeholder="Name the key factors, tradeoffs, and assumptions behind your choice."
           className="mt-3 w-full resize-none rounded-lg border border-white/10 bg-black/30 px-4 py-3 text-sm font-semibold leading-6 text-white outline-none placeholder:text-slate-400 focus:border-cyan"
@@ -396,7 +397,7 @@ export function ScenarioPlayClient({ scenario }: ScenarioPlayClientProps) {
 
       <button
         type="submit"
-        disabled={isLoading || !selectedOption}
+        disabled={isLoading || !selectedOption || !reasoning.trim()}
         className="flex w-full items-center justify-center gap-2 rounded-md bg-blue-500 px-5 py-4 text-sm font-extrabold text-white transition hover:bg-mint hover:text-slate-950 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-300"
       >
         {isLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}

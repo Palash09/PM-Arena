@@ -11,7 +11,7 @@ import {
 const payloadSchema = z.object({
   scenarioId: z.string(),
   optionId: z.string(),
-  reasoning: z.string().max(400).optional().default("")
+  reasoning: z.string().trim().min(1).max(400)
 });
 
 export async function POST(request: Request) {
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
 
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "Choose an option before locking your decision." },
+        { error: "Choose an option and add your reasoning before locking your decision." },
         { status: 400 }
       );
     }
