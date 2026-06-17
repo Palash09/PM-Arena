@@ -76,11 +76,6 @@ export function WelcomeScreen({ isReturningUser = false, onEnter }: WelcomeScree
               })}
             </div>
 
-            <div className="mt-5 flex items-center gap-2">
-              <span className="h-2.5 w-6 rounded-full bg-mint" />
-              <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-              <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-            </div>
           </div>
 
           <div className="mt-5 space-y-3">

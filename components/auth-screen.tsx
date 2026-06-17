@@ -4,9 +4,9 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { CheckCircle2, LoaderCircle, Lock, Mail } from "lucide-react";
 
-import { logIn, signUp, useAuth } from "@/lib/auth-store";
+import { logIn, requestPasswordReset, signUp, useAuth } from "@/lib/auth-store";
 
-type AuthMode = "login" | "signup";
+type AuthMode = "login" | "signup" | "forgot";
 
 interface AuthScreenProps {
   initialMode?: AuthMode;
@@ -19,6 +19,8 @@ export function AuthScreen({ initialMode = "login", nextHref = "/" }: AuthScreen
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const [devResetUrl, setDevResetUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const actionHint = error.includes("database")
@@ -36,10 +38,16 @@ export function AuthScreen({ initialMode = "login", nextHref = "/" }: AuthScreen
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    setNotice("");
+    setDevResetUrl("");
     setIsSubmitting(true);
 
     try {
-      if (mode === "signup") {
+      if (mode === "forgot") {
+        const result = await requestPasswordReset(email);
+        setNotice(result.message);
+        setDevResetUrl(result.devResetUrl ?? "");
+      } else if (mode === "signup") {
         await signUp(email, password);
       } else {
         await logIn(email, password);
@@ -97,6 +105,8 @@ export function AuthScreen({ initialMode = "login", nextHref = "/" }: AuthScreen
             onClick={() => {
               setMode(value as AuthMode);
               setError("");
+              setNotice("");
+              setDevResetUrl("");
             }}
             className={`min-h-11 flex-1 rounded-md text-sm font-extrabold ${
               mode === value ? "bg-mint text-slate-950" : "text-slate-200"
@@ -112,10 +122,16 @@ export function AuthScreen({ initialMode = "login", nextHref = "/" }: AuthScreen
           Account
         </p>
         <h2 className="mt-1 text-2xl font-extrabold text-white">
-          {mode === "signup" ? "Create your PM profile" : "Log back in"}
+          {mode === "signup"
+            ? "Create your PM profile"
+            : mode === "forgot"
+              ? "Reset your password"
+              : "Log back in"}
         </h2>
         <p className="mt-2 text-sm font-semibold leading-6 text-slate-300">
-          Use an email and password to sync progress and recommendations to your profile.
+          {mode === "forgot"
+            ? "Enter your account email and we will send a secure reset link."
+            : "Use an email and password to sync progress and recommendations to your profile."}
         </p>
       </div>
 
@@ -136,7 +152,8 @@ export function AuthScreen({ initialMode = "login", nextHref = "/" }: AuthScreen
           </span>
         </label>
 
-        <label className="block">
+        {mode !== "forgot" ? (
+          <label className="block">
           <span className="text-sm font-extrabold text-white">Password</span>
           <span className="mt-2 flex items-center gap-2 rounded-lg border border-white/10 bg-black/25 px-3 py-3 focus-within:border-mint">
             <Lock className="h-4 w-4 text-violet-300" />
@@ -151,7 +168,8 @@ export function AuthScreen({ initialMode = "login", nextHref = "/" }: AuthScreen
               minLength={8}
             />
           </span>
-        </label>
+          </label>
+        ) : null}
 
         {error ? (
           <div className="rounded-lg border border-coral/25 bg-coral/10 px-3 py-2">
@@ -162,14 +180,58 @@ export function AuthScreen({ initialMode = "login", nextHref = "/" }: AuthScreen
           </div>
         ) : null}
 
+        {notice ? (
+          <div className="rounded-lg border border-mint/25 bg-mint/10 px-3 py-2">
+            <p className="text-sm font-bold leading-5 text-mint">{notice}</p>
+            {devResetUrl ? (
+              <Link
+                href={devResetUrl}
+                className="mt-2 block break-all text-xs font-bold leading-5 text-cyan underline underline-offset-4"
+              >
+                Development reset link
+              </Link>
+            ) : null}
+          </div>
+        ) : null}
+
         <button
           type="submit"
           disabled={isSubmitting}
           className="flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-mint px-4 py-3 text-sm font-extrabold text-slate-950 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-300"
         >
           {isSubmitting ? <LoaderCircle className="h-4 w-4 animate-spin" /> : null}
-          {mode === "signup" ? "Create Account" : "Log In"}
+          {mode === "signup" ? "Create Account" : mode === "forgot" ? "Send Reset Link" : "Log In"}
         </button>
+
+        <div className="flex items-center justify-center gap-3 text-sm font-bold text-slate-300">
+          {mode === "login" ? (
+            <button
+              type="button"
+              onClick={() => {
+                setMode("forgot");
+                setError("");
+                setNotice("");
+                setDevResetUrl("");
+              }}
+              className="text-cyan underline underline-offset-4"
+            >
+              Forgot password?
+            </button>
+          ) : mode === "forgot" ? (
+            <button
+              type="button"
+              onClick={() => {
+                setMode("login");
+                setError("");
+                setNotice("");
+                setDevResetUrl("");
+              }}
+              className="text-cyan underline underline-offset-4"
+            >
+              Back to log in
+            </button>
+          ) : null}
+        </div>
       </form>
     </section>
   );

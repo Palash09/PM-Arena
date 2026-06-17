@@ -79,6 +79,8 @@ For free hosted Postgres, Neon is the simplest fit for this repo because the app
 
 Signed-in users use server-side email/password auth with an HTTP-only session cookie. Progress syncs to the `SavedProgress` table; guest users still have browser-local fallback progress.
 
+Password reset emails use Resend. In production, set `RESEND_API_KEY` and `EMAIL_FROM` in Netlify. `EMAIL_FROM` should use a sender/domain verified in Resend. Without `RESEND_API_KEY`, local development returns a development reset link in the UI, but production reset emails are disabled.
+
 ## Netlify deployment
 
 This repo is configured for Netlify with `netlify.toml`.
@@ -93,6 +95,8 @@ This repo is configured for Netlify with `netlify.toml`.
    DATABASE_URL="your-hosted-postgres-connection-string"
    ANTHROPIC_API_KEY="your-anthropic-key"
    ANTHROPIC_MODEL="claude-3-7-sonnet-latest"
+   RESEND_API_KEY="your-resend-api-key"
+   EMAIL_FROM="Product Arena <your-verified-sender@yourdomain.com>"
    ```
 
 4. Apply the Prisma schema to the hosted database once:

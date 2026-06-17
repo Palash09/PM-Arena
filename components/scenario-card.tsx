@@ -61,13 +61,13 @@ export function ScenarioCard({ scenario, featured = false }: ScenarioCardProps) 
       </div>
       <p className="mt-4 text-base font-semibold leading-7 text-slate-200">{scenario.shortPitch}</p>
       <div className="mt-4 grid grid-cols-3 gap-2">
-        <span className="rounded-lg border border-cyan/25 bg-cyan/10 px-2.5 py-2 text-center text-xs font-black text-cyan">
+        <span className="min-w-0 overflow-hidden break-words rounded-lg border border-cyan/25 bg-cyan/10 px-1.5 py-2 text-center text-[10px] font-black uppercase leading-4 text-cyan sm:text-xs">
           {scenario.decisionType}
         </span>
-        <span className="rounded-lg border border-lime/20 bg-lime/10 px-2.5 py-2 text-center text-xs font-black text-lime">
+        <span className="min-w-0 overflow-hidden break-words rounded-lg border border-lime/20 bg-lime/10 px-1.5 py-2 text-center text-[10px] font-black uppercase leading-4 text-lime sm:text-xs">
           {scenario.stage}
         </span>
-        <span className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-center text-xs font-black text-slate-100">
+        <span className="min-w-0 overflow-hidden break-words rounded-lg border border-white/10 bg-white/5 px-1.5 py-2 text-center text-[10px] font-black uppercase leading-4 text-slate-100 sm:text-xs">
           {scenario.recommendedSkill}
         </span>
       </div>

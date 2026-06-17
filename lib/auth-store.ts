@@ -92,6 +92,42 @@ export async function logIn(email: string, password: string) {
   writeCachedUser(payload.user);
 }
 
+export async function requestPasswordReset(email: string) {
+  const response = await fetch("/api/auth/password-reset/request", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ email })
+  });
+  const payload = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(
+      payload && typeof payload.error === "string"
+        ? payload.error
+        : `Password reset request failed with HTTP ${response.status}.`
+    );
+  }
+
+  return payload as { message: string; devResetUrl?: string };
+}
+
+export async function resetPassword(token: string, password: string) {
+  const payload = await parseAuthResponse(
+    await fetch("/api/auth/password-reset/confirm", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({ token, password })
+    })
+  );
+
+  writeCachedUser(payload.user);
+}
+
 export async function logOut() {
   await fetch("/api/auth/logout", {
     method: "POST",

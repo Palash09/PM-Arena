@@ -65,6 +65,7 @@ model UserAccount {
   updatedAt    DateTime        @updatedAt
   sessions     AuthSession[]
   progress     SavedProgress?
+  resetTokens  PasswordResetToken[]
 }
 
 model AuthSession {
@@ -86,6 +87,19 @@ model SavedProgress {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   user      UserAccount @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PasswordResetToken {
+  id        String      @id @default(cuid())
+  tokenHash String      @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime    @default(now())
+  user      UserAccount @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 model SkillStat {

@@ -10,7 +10,8 @@ interface AccountPageProps {
 
 export default async function AccountPage({ searchParams }: AccountPageProps) {
   const params = await searchParams;
-  const initialMode = params.mode === "signup" ? "signup" : "login";
+  const initialMode =
+    params.mode === "signup" || params.mode === "forgot" ? params.mode : "login";
   const nextHref = params.next?.startsWith("/") ? params.next : "/";
 
   return (
