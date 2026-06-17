@@ -3,7 +3,15 @@
 import Link from "next/link";
 import { ArrowRight, BarChart3, ShieldCheck, Sparkles, Target, Trophy } from "lucide-react";
 
-export function WelcomeScreen() {
+interface WelcomeScreenProps {
+  isReturningUser?: boolean;
+  onEnter?: () => void;
+}
+
+export function WelcomeScreen({ isReturningUser = false, onEnter }: WelcomeScreenProps) {
+  const enterClassName =
+    "flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-mint px-6 text-base font-black text-slate-950 shadow-[0_0_38px_rgba(125,255,179,0.28)] transition hover:bg-white";
+
   return (
     <div className="min-h-screen bg-[#030814] text-white">
       <main className="relative mx-auto flex min-h-screen w-full max-w-md overflow-hidden bg-[#030814] shadow-[0_0_80px_rgba(0,0,0,0.55)]">
@@ -76,15 +84,24 @@ export function WelcomeScreen() {
           </div>
 
           <div className="mt-5 space-y-3">
-            <Link
-              href="/account?mode=signup&next=/onboarding"
-              className="flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-mint px-6 text-base font-black text-slate-950 shadow-[0_0_38px_rgba(125,255,179,0.28)] transition hover:bg-white"
-            >
-              Enter the Arena
-              <ArrowRight className="h-5 w-5" />
-            </Link>
+            {isReturningUser ? (
+              <button type="button" onClick={onEnter} className={enterClassName}>
+                Enter the Arena
+                <ArrowRight className="h-5 w-5" />
+              </button>
+            ) : (
+              <Link
+                href="/account?mode=signup&next=/onboarding"
+                onClick={onEnter}
+                className={enterClassName}
+              >
+                Enter the Arena
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+            )}
             <Link
               href="/onboarding"
+              onClick={onEnter}
               className="flex items-center justify-center gap-2 text-sm font-extrabold text-white underline decoration-white/45 underline-offset-4"
             >
               <Sparkles className="h-4 w-4 text-mint" />
