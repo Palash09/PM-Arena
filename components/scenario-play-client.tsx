@@ -57,6 +57,7 @@ export function ScenarioPlayClient({ scenario }: ScenarioPlayClientProps) {
   const [reasoning, setReasoning] = useState("");
   const [evaluation, setEvaluation] = useState<EvaluationResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const selected = useMemo(
     () => scenario.options.find((option) => option.id === selectedOption),
@@ -77,6 +78,7 @@ export function ScenarioPlayClient({ scenario }: ScenarioPlayClientProps) {
     const answer = String(formData.get("reasoning") ?? "");
 
     setIsLoading(true);
+    setErrorMessage("");
 
     try {
       const response = await fetch("/api/game/evaluate", {
@@ -92,12 +94,19 @@ export function ScenarioPlayClient({ scenario }: ScenarioPlayClientProps) {
       });
 
       if (!response.ok) {
-        throw new Error("Evaluation failed.");
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(payload?.error ?? "We could not score this decision. Try again.");
       }
 
       const payload = (await response.json()) as EvaluationResult;
       setEvaluation(payload);
       recordAttempt({ scenario, evaluation: payload, optionId, reasoning: answer });
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "We could not score this decision. Check your connection and try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -387,12 +396,21 @@ export function ScenarioPlayClient({ scenario }: ScenarioPlayClientProps) {
 
       <button
         type="submit"
-        disabled={isLoading || !selectedOption || !reasoning.trim()}
+        disabled={isLoading || !selectedOption}
         className="flex w-full items-center justify-center gap-2 rounded-md bg-blue-500 px-5 py-4 text-sm font-extrabold text-white transition hover:bg-mint hover:text-slate-950 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-300"
       >
         {isLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
         Lock In Decision
       </button>
+
+      {errorMessage ? (
+        <div
+          role="alert"
+          className="rounded-lg border border-coral/35 bg-coral/15 px-4 py-3 text-sm font-bold leading-6 text-white"
+        >
+          {errorMessage}
+        </div>
+      ) : null}
 
       {selected ? (
         <p className="text-center text-xs font-bold leading-5 text-slate-300">
