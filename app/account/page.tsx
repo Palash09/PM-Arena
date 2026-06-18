@@ -5,6 +5,7 @@ interface AccountPageProps {
   searchParams: Promise<{
     mode?: string;
     next?: string;
+    error?: string;
   }>;
 }
 
@@ -16,7 +17,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
 
   return (
     <AppShell title="Account" compact>
-      <AuthScreen initialMode={initialMode} nextHref={nextHref} />
+      <AuthScreen initialMode={initialMode} nextHref={nextHref} initialError={params.error} />
     </AppShell>
   );
 }

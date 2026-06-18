@@ -81,6 +81,12 @@ Signed-in users use server-side email/password auth with an HTTP-only session co
 
 Password reset emails use Resend. In production, set `RESEND_API_KEY` and `EMAIL_FROM` in Netlify. `EMAIL_FROM` should use a sender/domain verified in Resend. Without `RESEND_API_KEY`, local development returns a development reset link in the UI, but production reset emails are disabled.
 
+Google login uses a Google OAuth web client. Add this authorized redirect URI in Google Cloud:
+
+```text
+https://productarena.netlify.app/api/auth/google/callback
+```
+
 ## Netlify deployment
 
 This repo is configured for Netlify with `netlify.toml`.
@@ -97,6 +103,8 @@ This repo is configured for Netlify with `netlify.toml`.
    ANTHROPIC_MODEL="claude-3-7-sonnet-latest"
    RESEND_API_KEY="your-resend-api-key"
    EMAIL_FROM="Product Arena <your-verified-sender@yourdomain.com>"
+   GOOGLE_CLIENT_ID="your-google-oauth-client-id"
+   GOOGLE_CLIENT_SECRET="your-google-oauth-client-secret"
    ```
 
 4. Apply the Prisma schema to the hosted database once:

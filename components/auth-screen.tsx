@@ -11,14 +11,15 @@ type AuthMode = "login" | "signup" | "forgot";
 interface AuthScreenProps {
   initialMode?: AuthMode;
   nextHref?: string;
+  initialError?: string;
 }
 
-export function AuthScreen({ initialMode = "login", nextHref = "/" }: AuthScreenProps) {
+export function AuthScreen({ initialMode = "login", nextHref = "/", initialError = "" }: AuthScreenProps) {
   const { user, isHydrated, logOut } = useAuth();
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(initialError);
   const [notice, setNotice] = useState("");
   const [devResetUrl, setDevResetUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -135,7 +136,29 @@ export function AuthScreen({ initialMode = "login", nextHref = "/" }: AuthScreen
         </p>
       </div>
 
-      <form onSubmit={onSubmit} className="mt-5 space-y-4">
+      {mode !== "forgot" ? (
+        <>
+          <a
+            href="/api/auth/google/start"
+            className="mt-5 flex min-h-12 w-full items-center justify-center gap-3 rounded-md border border-white/10 bg-white px-4 py-3 text-sm font-extrabold text-slate-950 transition hover:bg-mint"
+          >
+            <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-[13px] font-black text-blue-600">
+              G
+            </span>
+            Continue with Google
+          </a>
+
+          <div className="my-5 flex items-center gap-3">
+            <span className="h-px flex-1 bg-white/10" />
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+              or
+            </span>
+            <span className="h-px flex-1 bg-white/10" />
+          </div>
+        </>
+      ) : null}
+
+      <form onSubmit={onSubmit} className={mode === "forgot" ? "mt-5 space-y-4" : "space-y-4"}>
         <label className="block">
           <span className="text-sm font-extrabold text-white">Email</span>
           <span className="mt-2 flex items-center gap-2 rounded-lg border border-white/10 bg-black/25 px-3 py-3 focus-within:border-mint">

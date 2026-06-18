@@ -7,6 +7,8 @@ const AUTH_EVENT = "pm-auth-updated";
 
 export interface AuthUser {
   email: string;
+  name?: string | null;
+  avatarUrl?: string | null;
   createdAt: string;
 }
 

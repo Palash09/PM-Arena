@@ -102,9 +102,16 @@ export async function getCurrentAccount() {
   return session.user;
 }
 
-export function publicAccount(account: { email: string; createdAt: Date }) {
+export function publicAccount(account: {
+  email: string;
+  name?: string | null;
+  avatarUrl?: string | null;
+  createdAt: Date;
+}) {
   return {
     email: account.email,
+    name: account.name ?? null,
+    avatarUrl: account.avatarUrl ?? null,
     createdAt: account.createdAt.toISOString()
   };
 }

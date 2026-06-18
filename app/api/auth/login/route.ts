@@ -31,6 +31,13 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!account.passwordSalt || !account.passwordHash) {
+      return NextResponse.json(
+        { error: "This account uses Google login. Continue with Google instead." },
+        { status: 401 }
+      );
+    }
+
     if (!verifyPassword(parsed.data.password, account.passwordSalt, account.passwordHash)) {
       return NextResponse.json(
         { error: "Incorrect password. Check your password and try again." },
