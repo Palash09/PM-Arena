@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UserAccount {
+  id           String          @id @default(cuid())
+  email        String          @unique
+  passwordHash String?
+  passwordSalt String?
+  googleId     String?         @unique
+  name         String?
+  avatarUrl    String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  progress     SavedProgress?
+
+  @@map("UserAccount")
+}
+
+model SavedProgress {
+  id        String      @id @default(cuid())
+  userId    String      @unique
+  data      Json
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  user      UserAccount @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("SavedProgress")
+}
+
+model AnalyticsEvent {
+  id          String   @id @default(cuid())
+  eventType   String
+  anonymousId String?
+  userId      String?
+  path        String?
+  referrer    String?
+  userAgent   String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([eventType, createdAt])
+  @@index([anonymousId, createdAt])
+  @@index([userId, createdAt])
+  @@index([createdAt])
+  @@map("AnalyticsEvent")
+}

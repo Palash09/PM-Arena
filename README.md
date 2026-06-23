@@ -131,6 +131,20 @@ The build command runs `prisma generate` and `next build`. It does not run `db:s
 
 Do not run `npm run db:seed` against the production database after launch. The current seed script is intended for local/demo setup and clears seeded gameplay tables before inserting sample content. The app already falls back to the checked-in scenario and leader catalog, so production only needs `npm run db:deploy` for auth and synced progress tables.
 
+## Analytics dashboard
+
+The `analytics-dashboard/` folder contains a separate dashboard app for platform metrics. It reads the same production Postgres database but should be hosted as a second private Netlify site, not on the public Product Arena URL.
+
+Deploy recommendation:
+
+1. Create another Netlify site from this GitHub repo.
+2. Set the base directory to `analytics-dashboard`.
+3. Use build command `npm run build`.
+4. Add `DATABASE_URL` and `DASHBOARD_PASSWORD`.
+5. Deploy to a separate URL such as `product-arena-analytics.netlify.app`.
+
+The main app records `page_view` events into `AnalyticsEvent`; run `npm run db:deploy` against production after pulling this change so the analytics table exists.
+
 ## Transcript ingestion
 
 To generate scenario extraction output from the `podcasts/` folder:

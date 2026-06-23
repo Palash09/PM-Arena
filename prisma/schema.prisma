@@ -105,6 +105,23 @@ model PasswordResetToken {
   @@index([expiresAt])
 }
 
+model AnalyticsEvent {
+  id          String   @id @default(cuid())
+  eventType   String
+  anonymousId String?
+  userId      String?
+  path        String?
+  referrer    String?
+  userAgent   String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([eventType, createdAt])
+  @@index([anonymousId, createdAt])
+  @@index([userId, createdAt])
+  @@index([createdAt])
+}
+
 model SkillStat {
   id        String      @id @default(cuid())
   key       SkillKey
