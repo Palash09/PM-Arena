@@ -1,6 +1,6 @@
-# Product Arena
+# Product Decision League
 
-Product Arena is a mobile-first PM decision simulator inspired by football career modes. The first build in this repo includes:
+Product Decision League is a mobile-first PM decision simulator inspired by football career modes. The first build in this repo includes:
 
 - A Next.js app with a FIFA-leaning interface for `The Hub`, `Transfer Market`, leader cards, and playable decision scenarios
 - A seeded data layer built from the `podcasts/` transcript corpus
@@ -81,10 +81,10 @@ Signed-in users use server-side email/password auth with an HTTP-only session co
 
 Password reset emails use Resend. In production, set `RESEND_API_KEY` and `EMAIL_FROM` in Netlify. `EMAIL_FROM` should use a sender/domain verified in Resend. Without `RESEND_API_KEY`, local development returns a development reset link in the UI, but production reset emails are disabled.
 
-Google login uses a Google OAuth web client. Add this authorized redirect URI in Google Cloud:
+Google login uses a Google OAuth web client. Add the final production domain as an authorized redirect URI in Google Cloud:
 
 ```text
-https://productarena.netlify.app/api/auth/google/callback
+https://productdecision.palasharma.com/api/auth/google/callback
 ```
 
 ## Netlify deployment
@@ -93,27 +93,34 @@ This repo is configured for Netlify with `netlify.toml`.
 
 ### One-time setup
 
-1. Create a hosted Postgres database. Neon or Supabase both work; use a pooled connection string for serverless deployments.
+1. Provision Netlify Database, or another hosted Postgres database with a serverless-compatible pooled connection string.
 2. In Netlify, create a new site from the Git repo.
 3. Set these Netlify environment variables:
 
    ```bash
    DATABASE_URL="your-hosted-postgres-connection-string"
    ANTHROPIC_API_KEY="your-anthropic-key"
-   ANTHROPIC_MODEL="claude-3-7-sonnet-latest"
+   ANTHROPIC_MODEL="claude-sonnet-4-20250514"
+   AI_EVALUATION_HOURLY_LIMIT="3"
+   AI_EVALUATION_DAILY_LIMIT="10"
+   AI_EVALUATION_MONTHLY_LIMIT="200"
+   RATE_LIMIT_SALT="a-long-random-production-secret"
    RESEND_API_KEY="your-resend-api-key"
-   EMAIL_FROM="Product Arena <your-verified-sender@yourdomain.com>"
+   EMAIL_FROM="Product Decision League <account@mail.palasharma.com>"
    GOOGLE_CLIENT_ID="your-google-oauth-client-id"
    GOOGLE_CLIENT_SECRET="your-google-oauth-client-secret"
+   NEXT_PUBLIC_APP_URL="https://productdecision.palasharma.com"
    ```
 
-4. Apply the Prisma schema to the hosted database once:
+4. Apply the checked-in Prisma migrations to a new hosted database once:
 
    ```bash
    DATABASE_URL="your-hosted-postgres-connection-string" npm run db:deploy
    ```
 
 5. Deploy on Netlify.
+
+See `docs/production-launch-runbook.md` for custom-domain setup, existing-database baselining, OAuth, email, and production smoke tests.
 
 ### Netlify build settings
 
@@ -133,7 +140,7 @@ Do not run `npm run db:seed` against the production database after launch. The c
 
 ## Analytics dashboard
 
-The `analytics-dashboard/` folder contains a separate dashboard app for platform metrics. It reads the same production Postgres database but should be hosted as a second private Netlify site, not on the public Product Arena URL.
+The `analytics-dashboard/` folder contains a separate dashboard app for platform metrics. It reads the same production Postgres database but should be hosted as a second private Netlify site, not on the public Product Decision League URL.
 
 Deploy recommendation:
 
@@ -141,7 +148,7 @@ Deploy recommendation:
 2. Set the base directory to `analytics-dashboard`.
 3. Use build command `npm run build`.
 4. Add `DATABASE_URL` and `DASHBOARD_PASSWORD`.
-5. Deploy to a separate URL such as `product-arena-analytics.netlify.app`.
+5. Deploy to a separate URL such as `product-decision-league-analytics.netlify.app`.
 
 The main app records `page_view` events into `AnalyticsEvent`; run `npm run db:deploy` against production after pulling this change so the analytics table exists.
 

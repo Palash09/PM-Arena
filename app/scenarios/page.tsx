@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { AppShell } from "@/components/app-shell";
 import { ScenarioFilters } from "@/components/scenario-filters";
 import { ScenarioResults } from "@/components/scenario-results";
@@ -6,6 +8,14 @@ import { getScenarios } from "@/lib/data/repository";
 const stages = ["ALL", "EARLY", "GROWTH", "SCALE", "TURNAROUND"] as const;
 const decisionTypes = ["ALL", "STRATEGY", "PRIORITIZATION", "TEAM", "LAUNCH", "PRICING", "GROWTH"] as const;
 const difficulties = ["ALL", "ROOKIE", "PRO", "WORLD_CLASS", "LEGENDARY"] as const;
+
+export const metadata: Metadata = {
+  title: "Scenario Market",
+  description: "Browse real-world product decision challenges by stage, skill, and difficulty.",
+  alternates: {
+    canonical: "/scenarios"
+  }
+};
 
 interface ScenarioMarketPageProps {
   searchParams: Promise<{

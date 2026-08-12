@@ -38,13 +38,18 @@ export default async function DashboardPage() {
     ...metrics.trend.map((entry) => Math.max(entry.visitors, entry.accounts))
   );
   const maxFunnelValue = Math.max(1, ...metrics.funnel.map((entry) => entry.value));
+  const maxChallengeFunnelValue = Math.max(
+    1,
+    ...metrics.challengeFunnel.map((entry) => entry.value)
+  );
   const maxPageViews = Math.max(1, ...metrics.topPages.map((entry) => entry.views));
+  const maxSourceVisitors = Math.max(1, ...metrics.topSources.map((entry) => entry.visitors));
 
   return (
     <main className="dashboard-shell">
       <header className="page-header">
         <div>
-          <p className="eyebrow green">Product Arena</p>
+          <p className="eyebrow green">Product Decision League</p>
           <h1>Usage Dashboard</h1>
           <p className="subtitle">
             Visitor, signup, onboarding, and gameplay signals from the production database.
@@ -73,9 +78,32 @@ export default async function DashboardPage() {
           detail="Accounts / unique visitors"
         />
         <KpiCard
-          label="Decisions Synced"
-          value={formatNumber(metrics.cards.totalSyncedAttempts)}
-          detail={`${formatNumber(metrics.cards.usersWithAttempts)} users have played`}
+          label="Activated Players"
+          value={formatNumber(metrics.cards.activatedPlayerCount30)}
+          detail="Completed at least two scenarios, 30d"
+        />
+      </section>
+
+      <section className="kpi-grid">
+        <KpiCard
+          label="Challenge Starts"
+          value={formatNumber(metrics.challengeCards.starters30)}
+          detail={`${metrics.challengeCards.startRate30}% of challenge viewers`}
+        />
+        <KpiCard
+          label="Challenge Reveals"
+          value={formatNumber(metrics.challengeCards.completers30)}
+          detail={`${metrics.challengeCards.completionRate30}% of decision starters`}
+        />
+        <KpiCard
+          label="Challenge Share Rate"
+          value={`${metrics.challengeCards.shareRate30}%`}
+          detail={`${formatNumber(metrics.challengeCards.sharers30)} people shared`}
+        />
+        <KpiCard
+          label="Full Product CTR"
+          value={`${metrics.challengeCards.ctaRate30}%`}
+          detail={`${formatNumber(metrics.challengeCards.ctaUsers30)} reveal-to-product clicks`}
         />
       </section>
 
@@ -109,6 +137,54 @@ export default async function DashboardPage() {
                 <span className="axis-label">{formatDate(entry.date)}</span>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="card">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow green">Playable funnel</p>
+              <h2>Challenge distribution loop</h2>
+            </div>
+          </div>
+          <div className="funnel-list">
+            {metrics.challengeFunnel.map((entry) => (
+              <div className="funnel-row" key={entry.label}>
+                <div>
+                  <strong>{entry.label}</strong>
+                  <span>{formatNumber(entry.value)}</span>
+                </div>
+                <div className="progress-track">
+                  <span style={{ width: `${(entry.value / maxChallengeFunnelValue) * 100}%` }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="card">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Attribution</p>
+              <h2>Challenge sources and campaigns</h2>
+            </div>
+          </div>
+          <div className="page-list">
+            {metrics.topSources.length ? (
+              metrics.topSources.map((entry) => (
+                <div className="page-row" key={`${entry.source}-${entry.campaign}`}>
+                  <div>
+                    <strong>{entry.source}</strong>
+                    <span>{entry.campaign} · {formatNumber(entry.visitors)} visitors</span>
+                  </div>
+                  <div className="mini-track">
+                    <span style={{ width: `${(entry.visitors / maxSourceVisitors) * 100}%` }} />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="empty">No challenge attribution recorded yet.</p>
+            )}
           </div>
         </section>
 

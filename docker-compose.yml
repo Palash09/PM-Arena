@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: product-league-postgres
+    container_name: product-decision-league-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: productleague

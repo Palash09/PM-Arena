@@ -1,6 +1,6 @@
-# Product Arena Analytics Dashboard
+# Product Decision League Analytics Dashboard
 
-This is a separate Next.js app for Product Arena usage analytics. It should be deployed as its own private Netlify site, not under `productarena.netlify.app`.
+This is a separate Next.js app for Product Decision League usage analytics. It should be deployed as its own private Netlify site, not under the public application domain.
 
 ## Metrics Included
 
@@ -14,7 +14,7 @@ This is a separate Next.js app for Product Arena usage analytics. It should be d
 ## Required Environment Variables
 
 ```bash
-DATABASE_URL="same-production-postgres-url-used-by-product-arena"
+DATABASE_URL="same-production-postgres-url-used-by-product-decision-league"
 DASHBOARD_PASSWORD="choose-a-private-dashboard-password"
 ```
 
@@ -35,7 +35,7 @@ Use a second Netlify site connected to the same GitHub repo:
 Recommended dashboard URL shape:
 
 ```text
-https://product-arena-analytics.netlify.app
+https://product-decision-league-analytics.netlify.app
 ```
 
 You can also host it on Vercel as a separate project using `analytics-dashboard` as the root directory. Netlify is simpler here because the main app is already there.

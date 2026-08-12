@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { reserveAnthropicEvaluation } from "@/lib/ai-usage-limit";
 import { maybeEvaluateWithAnthropic } from "@/lib/anthropic";
 import {
   getFallbackEvaluation,
@@ -11,7 +12,8 @@ import {
 const payloadSchema = z.object({
   scenarioId: z.string(),
   optionId: z.string(),
-  reasoning: z.string().trim().min(1).max(400)
+  reasoning: z.string().trim().min(1).max(400),
+  anonymousId: z.string().trim().max(120).optional()
 });
 
 export async function POST(request: Request) {
@@ -38,15 +40,25 @@ export async function POST(request: Request) {
     }
 
     let aiEvaluation = null;
+    const canUseAnthropic = await reserveAnthropicEvaluation(
+      request,
+      parsed.data.anonymousId
+    );
 
     try {
+      if (!canUseAnthropic) {
+        throw new Error("Anthropic allowance unavailable");
+      }
+
       aiEvaluation = await maybeEvaluateWithAnthropic({
         scenario,
         selectedOption,
         reasoning: parsed.data.reasoning
       });
     } catch (error) {
-      console.error("AI evaluation failed; using rules-based fallback.", error);
+      if (canUseAnthropic) {
+        console.error("AI evaluation failed; using rules-based fallback.", error);
+      }
     }
 
     const evaluation =

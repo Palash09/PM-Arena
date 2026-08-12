@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { getRequestOrigin } from "@/lib/app-url";
 import {
   GOOGLE_OAUTH_STATE_COOKIE,
   getGoogleOAuthConfig,
@@ -24,12 +25,14 @@ interface GoogleUserInfo {
   picture?: string;
 }
 
-function accountRedirect(request: Request, error?: string) {
-  const redirectUrl = new URL("/", request.url);
+function accountRedirect(request: Request, options: { error?: string; accountCreated?: boolean } = {}) {
+  const redirectUrl = new URL("/", getRequestOrigin(request));
 
-  if (error) {
+  if (options.error) {
     redirectUrl.pathname = "/account";
-    redirectUrl.searchParams.set("error", error);
+    redirectUrl.searchParams.set("error", options.error);
+  } else if (options.accountCreated) {
+    redirectUrl.searchParams.set("account_created", "google");
   }
 
   return redirectUrl;
@@ -46,11 +49,15 @@ export async function GET(request: Request) {
   cookieStore.delete(GOOGLE_OAUTH_STATE_COOKIE);
 
   if (error) {
-    return NextResponse.redirect(accountRedirect(request, `Google login was cancelled: ${error}`));
+    return NextResponse.redirect(
+      accountRedirect(request, { error: `Google login was cancelled: ${error}` })
+    );
   }
 
   if (!code || !state || !expectedStateHash || hashOAuthState(state) !== expectedStateHash) {
-    return NextResponse.redirect(accountRedirect(request, "Google login could not be verified. Try again."));
+    return NextResponse.redirect(
+      accountRedirect(request, { error: "Google login could not be verified. Try again." })
+    );
   }
 
   try {
@@ -91,12 +98,13 @@ export async function GET(request: Request) {
     }
 
     const email = googleUser.email.toLowerCase();
-    const account =
-      (await prisma.userAccount.findFirst({
+    const existingAccount = await prisma.userAccount.findFirst({
         where: {
           OR: [{ googleId: googleUser.sub }, { email }]
         }
-      })) ??
+      });
+    const account =
+      existingAccount ??
       (await prisma.userAccount.create({
         data: {
           email,
@@ -120,10 +128,12 @@ export async function GET(request: Request) {
 
     await createSession(linkedAccount.id);
 
-    return NextResponse.redirect(accountRedirect(request));
+    return NextResponse.redirect(
+      accountRedirect(request, { accountCreated: !existingAccount })
+    );
   } catch (caught) {
     const message = caught instanceof Error ? caught.message : "Google login failed.";
 
-    return NextResponse.redirect(accountRedirect(request, message));
+    return NextResponse.redirect(accountRedirect(request, { error: message }));
   }
 }

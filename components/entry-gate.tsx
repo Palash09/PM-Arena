@@ -13,22 +13,22 @@ interface EntryGateProps {
   scenarios: Scenario[];
 }
 
-const INTRO_SESSION_KEY = "product-arena-intro-entered-v1";
+const INTRO_SESSION_KEY = "product-decision-league-intro-entered-v1";
 
 export function EntryGate({ scenarios }: EntryGateProps) {
   const { user, isHydrated: authHydrated } = useAuth();
   const { progress, isHydrated: progressHydrated } = useProgress();
   const [introHydrated, setIntroHydrated] = useState(false);
-  const [hasEnteredArena, setHasEnteredArena] = useState(false);
+  const [hasEnteredLeague, setHasEnteredLeague] = useState(false);
 
   useEffect(() => {
-    setHasEnteredArena(window.sessionStorage.getItem(INTRO_SESSION_KEY) === "true");
+    setHasEnteredLeague(window.sessionStorage.getItem(INTRO_SESSION_KEY) === "true");
     setIntroHydrated(true);
   }, []);
 
-  function enterArena() {
+  function enterLeague() {
     window.sessionStorage.setItem(INTRO_SESSION_KEY, "true");
-    setHasEnteredArena(true);
+    setHasEnteredLeague(true);
   }
 
   if (!authHydrated || !progressHydrated || !introHydrated) {
@@ -41,11 +41,11 @@ export function EntryGate({ scenarios }: EntryGateProps) {
     );
   }
 
-  if (!hasEnteredArena) {
+  if (!hasEnteredLeague) {
     return (
       <WelcomeScreen
         isReturningUser={Boolean(user) || progress.onboarded || progress.attempts.length > 0}
-        onEnter={enterArena}
+        onEnter={enterLeague}
       />
     );
   }

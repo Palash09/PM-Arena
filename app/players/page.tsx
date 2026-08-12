@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
+
 import { AppShell } from "@/components/app-shell";
 import { PlayerGrid } from "@/components/player-grid";
 import { getPlayers, getScenarios } from "@/lib/data/repository";
+
+export const metadata: Metadata = {
+  title: "Product Leader Cards",
+  description: "Explore product leaders, signature frameworks, and the scenarios inspired by their experience.",
+  alternates: {
+    canonical: "/players"
+  }
+};
 
 interface PlayersPageProps {
   searchParams: Promise<{

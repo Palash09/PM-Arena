@@ -57,7 +57,7 @@ export function ResetPasswordScreen({ token }: ResetPasswordScreenProps) {
           href="/"
           className="mt-5 flex min-h-12 w-full items-center justify-center rounded-md bg-mint px-4 py-3 text-sm font-extrabold text-slate-950"
         >
-          Enter the Arena
+          Enter Product Decision League
         </Link>
       </section>
     );
@@ -70,7 +70,7 @@ export function ResetPasswordScreen({ token }: ResetPasswordScreenProps) {
       </p>
       <h2 className="mt-1 text-2xl font-extrabold text-white">Set a new password</h2>
       <p className="mt-2 text-sm font-semibold leading-6 text-slate-300">
-        Enter a new 8+ character password for your Product Arena account.
+        Enter a new 8+ character password for your Product Decision League account.
       </p>
 
       <form onSubmit={onSubmit} className="mt-5 space-y-4">

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { authDatabaseErrorResponse } from "@/lib/api-error-response";
+import { getRequestOrigin } from "@/lib/app-url";
 import { sendPasswordResetEmail } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
 
@@ -14,17 +15,6 @@ const payloadSchema = z.object({
 
 function hashToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
-}
-
-function originFromRequest(request: Request) {
-  const forwardedHost = request.headers.get("x-forwarded-host");
-  const forwardedProto = request.headers.get("x-forwarded-proto") || "https";
-
-  if (forwardedHost) {
-    return `${forwardedProto}://${forwardedHost}`;
-  }
-
-  return new URL(request.url).origin;
 }
 
 export async function POST(request: Request) {
@@ -65,7 +55,7 @@ export async function POST(request: Request) {
       }
     });
 
-    const resetUrl = `${originFromRequest(request)}/account/reset?token=${token}`;
+    const resetUrl = `${getRequestOrigin(request)}/account/reset?token=${token}`;
     const emailResult = await sendPasswordResetEmail({ email, resetUrl });
 
     return NextResponse.json({

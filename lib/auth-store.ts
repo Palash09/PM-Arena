@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { getCampaignAttribution, trackAnalyticsEvent } from "@/lib/client-analytics";
+
 const USER_CACHE_KEY = "pm-simulator-current-user-v1";
 const AUTH_EVENT = "pm-auth-updated";
 
@@ -77,6 +79,12 @@ export async function signUp(email: string, password: string) {
   );
 
   writeCachedUser(payload.user);
+  void trackAnalyticsEvent("account_created", {
+    metadata: {
+      provider: "password",
+      ...getCampaignAttribution()
+    }
+  });
 }
 
 export async function logIn(email: string, password: string) {

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { getRankForXp } from "@/components/rank-config";
 import { authStorageKey, getCurrentUser } from "@/lib/auth-store";
+import { getCampaignAttribution, trackAnalyticsEvent } from "@/lib/client-analytics";
 import { CompanyStage, DecisionType, Difficulty, EvaluationResult, Scenario, SkillKey } from "@/lib/types";
 
 export const skillLabels: Record<SkillKey, string> = {
@@ -405,6 +406,21 @@ export function useProgress() {
 
     setProgress(next);
     writeProgress(next);
+
+    const completedScenarioIds = new Set(
+      progress.attempts.map((attempt) => attempt.scenarioId)
+    );
+
+    if (completedScenarioIds.size === 1 && !completedScenarioIds.has(input.scenario.id)) {
+      void trackAnalyticsEvent("second_scenario_completed", {
+        metadata: {
+          scenarioId: input.scenario.id,
+          scenarioSlug: input.scenario.slug,
+          score: input.evaluation.score,
+          ...getCampaignAttribution()
+        }
+      });
+    }
   }
 
   function resetProgress() {
