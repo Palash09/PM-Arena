@@ -32,6 +32,31 @@ function asProgressData(value: unknown): ProgressData {
   return value as ProgressData;
 }
 
+function metadataValue(value: unknown, key: string) {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return undefined;
+  }
+
+  const candidate = (value as Record<string, unknown>)[key];
+  return typeof candidate === "string" && candidate.trim() ? candidate : undefined;
+}
+
+function uniqueEventActors(
+  events: Array<{ id: string; anonymousId: string | null; userId: string | null }>
+) {
+  return new Set(events.map((event) => event.userId || event.anonymousId || event.id)).size;
+}
+
+function referrerHost(referrer: string | null) {
+  if (!referrer) return undefined;
+
+  try {
+    return new URL(referrer).hostname.replace(/^www\./, "");
+  } catch {
+    return undefined;
+  }
+}
+
 export async function getDashboardMetrics() {
   const last30 = daysAgo(30);
   const last14 = daysAgo(13);
@@ -73,10 +98,28 @@ export async function getDashboardMetrics() {
   ]);
 
   const pageViews30 = events30.filter((event) => event.eventType === "page_view");
+  const challengeViews30 = events30.filter((event) => event.eventType === "challenge_view");
+  const challengeStarts30 = events30.filter((event) => event.eventType === "challenge_started");
+  const challengeCompletions30 = events30.filter(
+    (event) => event.eventType === "challenge_completed"
+  );
+  const challengeShares30 = events30.filter((event) => event.eventType === "challenge_shared");
+  const challengeCtas30 = events30.filter(
+    (event) => event.eventType === "challenge_cta_clicked"
+  );
+  const activatedPlayers30 = events30.filter(
+    (event) => event.eventType === "second_scenario_completed"
+  );
   const uniqueVisitors30 = new Set(
     pageViews30.map((event) => event.anonymousId || event.userId).filter(Boolean)
   ).size;
   const signedInVisitors30 = new Set(pageViews30.map((event) => event.userId).filter(Boolean)).size;
+  const challengeViewers30 = uniqueEventActors(challengeViews30);
+  const challengeStarters30 = uniqueEventActors(challengeStarts30);
+  const challengeCompleters30 = uniqueEventActors(challengeCompletions30);
+  const challengeSharers30 = uniqueEventActors(challengeShares30);
+  const challengeCtaUsers30 = uniqueEventActors(challengeCtas30);
+  const activatedPlayerCount30 = uniqueEventActors(activatedPlayers30);
 
   const progressSummaries = savedProgressRows.map((row) => {
     const progress = asProgressData(row.data);
@@ -107,6 +150,31 @@ export async function getDashboardMetrics() {
     .sort((left, right) => right[1] - left[1])
     .slice(0, 8)
     .map(([path, views]) => ({ path, views }));
+
+  const sourceCounts = new Map<string, { source: string; campaign: string; visitors: Set<string> }>();
+
+  for (const event of challengeViews30) {
+    const source =
+      metadataValue(event.metadata, "source") || referrerHost(event.referrer) || "direct";
+    const campaign = metadataValue(event.metadata, "campaign") || "unassigned";
+    const key = `${source}::${campaign}`;
+    const current = sourceCounts.get(key) ?? {
+      source,
+      campaign,
+      visitors: new Set<string>()
+    };
+    current.visitors.add(event.userId || event.anonymousId || event.id);
+    sourceCounts.set(key, current);
+  }
+
+  const topSources = [...sourceCounts.values()]
+    .map((entry) => ({
+      source: entry.source,
+      campaign: entry.campaign,
+      visitors: entry.visitors.size
+    }))
+    .sort((left, right) => right.visitors - left.visitors)
+    .slice(0, 8);
 
   const trendDays = Array.from({ length: 14 }, (_, index) => {
     const date = daysAgo(13 - index);
@@ -160,19 +228,40 @@ export async function getDashboardMetrics() {
       onboardedUsers,
       usersWithAttempts,
       totalSyncedAttempts,
-      activeProgress30
+      activeProgress30,
+      activatedPlayerCount30
     },
+    challengeCards: {
+      viewers30: challengeViewers30,
+      starters30: challengeStarters30,
+      completers30: challengeCompleters30,
+      sharers30: challengeSharers30,
+      ctaUsers30: challengeCtaUsers30,
+      startRate30: percent(challengeStarters30, challengeViewers30),
+      completionRate30: percent(challengeCompleters30, challengeStarters30),
+      shareRate30: percent(challengeSharers30, challengeCompleters30),
+      ctaRate30: percent(challengeCtaUsers30, challengeCompleters30)
+    },
+    challengeFunnel: [
+      { label: "Challenge viewers", value: challengeViewers30 },
+      { label: "Decision starters", value: challengeStarters30 },
+      { label: "Completed reveals", value: challengeCompleters30 },
+      { label: "Challenge sharers", value: challengeSharers30 },
+      { label: "Full product clicks", value: challengeCtaUsers30 }
+    ],
     funnel: [
       { label: "Unique visitors", value: uniqueVisitors30 },
       { label: "Accounts created", value: accounts30.length },
       { label: "Onboarded profiles", value: onboardedUsers },
-      { label: "Users with decisions", value: usersWithAttempts }
+      { label: "Users with decisions", value: usersWithAttempts },
+      { label: "Activated players (2+)", value: activatedPlayerCount30 }
     ],
     authMix: [
       { label: "Google", value: googleAccounts },
       { label: "Email/password", value: passwordAccounts }
     ],
     topPages,
+    topSources,
     trend,
     recentAccounts: allAccounts.slice(0, 10).map((account) => ({
       email: account.email,

@@ -20,7 +20,7 @@ export async function sendPasswordResetEmail({
     throw new Error("Password reset email is not configured. Add RESEND_API_KEY in Netlify.");
   }
 
-  const from = process.env.EMAIL_FROM || "Product Arena <onboarding@resend.dev>";
+  const from = process.env.EMAIL_FROM || "Product Decision League <onboarding@resend.dev>";
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -30,9 +30,9 @@ export async function sendPasswordResetEmail({
     body: JSON.stringify({
       from,
       to: email,
-      subject: "Reset your Product Arena password",
+      subject: "Reset your Product Decision League password",
       html: [
-        "<h1>Reset your Product Arena password</h1>",
+        "<h1>Reset your Product Decision League password</h1>",
         "<p>Use this secure link to set a new password. It expires in 30 minutes.</p>",
         `<p><a href="${resetUrl}">Reset password</a></p>`,
         "<p>If you did not request this, you can ignore this email.</p>"

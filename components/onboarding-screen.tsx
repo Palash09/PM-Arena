@@ -303,7 +303,7 @@ export function OnboardingScreen() {
         type="submit"
         className="flex w-full items-center justify-center gap-2 rounded-lg bg-mint px-5 py-4 text-sm font-extrabold text-slate-950"
       >
-        Enter the Arena
+        Enter Product Decision League
         <ArrowRight className="h-4 w-4" />
       </button>
     </form>

@@ -91,7 +91,7 @@ export async function maybeEvaluateWithAnthropic({
   ].join("\n");
 
   const response = await anthropic.messages.create({
-    model: process.env.ANTHROPIC_MODEL || "claude-3-7-sonnet-latest",
+    model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-20250514",
     max_tokens: 900,
     temperature: 0.2,
     messages: [

@@ -11,12 +11,14 @@ import {
   Lock,
   MessageSquareText,
   RotateCcw,
+  Share2,
   Sparkles,
   Target,
   Trophy
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { getAnonymousId, trackAnalyticsEvent } from "@/lib/client-analytics";
 import { useProgress, xpForScenarioAttempt } from "@/lib/progress-store";
 import { EvaluationResult, Scenario } from "@/lib/types";
 
@@ -89,7 +91,8 @@ export function ScenarioPlayClient({ scenario }: ScenarioPlayClientProps) {
         body: JSON.stringify({
           scenarioId: scenario.id,
           optionId,
-          reasoning: answer
+          reasoning: answer,
+          anonymousId: getAnonymousId()
         })
       });
 
@@ -212,6 +215,26 @@ export function ScenarioPlayClient({ scenario }: ScenarioPlayClientProps) {
               ))}
             </ul>
           </div>
+
+          <a
+            href={`/challenge/${scenario.slug}?utm_source=product&utm_medium=share_prompt&utm_campaign=${scenario.slug}`}
+            onClick={() => {
+              void trackAnalyticsEvent("challenge_cta_clicked", {
+                metadata: {
+                  scenarioId: scenario.id,
+                  scenarioSlug: scenario.slug,
+                  location: "full_game_result"
+                }
+              });
+            }}
+            className="flex w-full items-center justify-between rounded-md border border-cyan/30 bg-cyan/10 px-4 py-3.5 text-sm font-extrabold text-cyan"
+          >
+            <span className="inline-flex items-center gap-2">
+              <Share2 className="h-4 w-4" />
+              Open shareable challenge
+            </span>
+            <ChevronRight className="h-4 w-4" />
+          </a>
 
           <div className="grid grid-cols-2 gap-3">
             <button

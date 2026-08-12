@@ -15,7 +15,7 @@ export function WelcomeScreen({ isReturningUser = false, onEnter }: WelcomeScree
   return (
     <div className="min-h-screen bg-[#030814] text-white">
       <main className="relative mx-auto flex min-h-screen w-full max-w-md overflow-hidden bg-[#030814] shadow-[0_0_80px_rgba(0,0,0,0.55)]">
-        <div className="absolute inset-0 bg-[url('/product-arena-intro.png')] bg-cover bg-center" />
+        <div className="absolute inset-0 bg-[url('/product-decision-league-intro.png')] bg-cover bg-center" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,8,20,0.74)_0%,rgba(3,8,20,0.16)_29%,rgba(3,8,20,0.34)_51%,rgba(3,8,20,0.88)_72%,rgba(3,8,20,0.98)_100%)]" />
         <div className="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(circle_at_50%_0%,rgba(125,255,179,0.18),transparent_58%)]" />
         <div className="absolute inset-0 bg-hub-grid bg-[size:34px_34px] opacity-[0.07]" />
@@ -27,9 +27,10 @@ export function WelcomeScreen({ isReturningUser = false, onEnter }: WelcomeScree
             </div>
 
             <div className="mt-5">
-              <h1 className="text-[42px] font-black uppercase leading-[0.9] tracking-[0.01em] text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.75)]">
+              <h1 className="text-[38px] font-black uppercase leading-[0.9] tracking-[0.01em] text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.75)]">
                 Product
-                <span className="block text-mint">Arena</span>
+                <span className="block">Decision</span>
+                <span className="block text-mint">League</span>
               </h1>
               <p className="mx-auto mt-4 max-w-[284px] text-sm font-bold leading-6 text-slate-100">
                 The game for Product Managers who make winning decisions under pressure.
@@ -81,7 +82,7 @@ export function WelcomeScreen({ isReturningUser = false, onEnter }: WelcomeScree
           <div className="mt-5 space-y-3">
             {isReturningUser ? (
               <button type="button" onClick={onEnter} className={enterClassName}>
-                Enter the Arena
+                Enter Product Decision League
                 <ArrowRight className="h-5 w-5" />
               </button>
             ) : (
@@ -90,7 +91,7 @@ export function WelcomeScreen({ isReturningUser = false, onEnter }: WelcomeScree
                 onClick={onEnter}
                 className={enterClassName}
               >
-                Enter the Arena
+                Enter Product Decision League
                 <ArrowRight className="h-5 w-5" />
               </Link>
             )}
