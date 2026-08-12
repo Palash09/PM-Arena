@@ -3,10 +3,8 @@ import { Prisma, PrismaClient } from "@prisma/client";
 
 const baselineMigration = "20260812120000_initial_production_schema";
 const baselineTables = [
-  "AnalyticsEvent",
   "AuthSession",
   "GameAttempt",
-  "PasswordResetToken",
   "PlayerCard",
   "SavedProgress",
   "Scenario",
@@ -32,9 +30,7 @@ try {
     process.exitCode = 0;
   } else if (existingTables.size !== baselineTables.length) {
     const missing = baselineTables.filter((table) => !existingTables.has(table));
-    throw new Error(
-      `Refusing to baseline a partial production schema. Missing tables: ${missing.join(", ")}`
-    );
+    throw new Error(`Refusing to baseline a partial legacy schema. Missing tables: ${missing.join(", ")}`);
   } else {
     const result = spawnSync(
       "node_modules/.bin/prisma",

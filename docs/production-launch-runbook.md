@@ -68,7 +68,7 @@ DATABASE_URL="postgresql://..." npm run db:deploy
 
 ### Existing hosted database created with `prisma db push`
 
-Do not apply the initial migration directly. The Netlify build runs `scripts/prepare-production-db.mjs`, which confirms every expected legacy table is present before recording the initial migration as a baseline. It refuses to continue if the database contains only a partial schema. The normal deploy command then applies the pending `AiUsageWindow` migration.
+Do not apply the initial migration directly. The Netlify build runs `scripts/prepare-production-db.mjs`, which confirms every expected core legacy table is present before recording the initial migration as a baseline. It refuses to continue if the database contains only a partial core schema. The normal deploy command then safely adds analytics/password-reset tables when missing and applies the `AiUsageWindow` migration.
 
 For a manual recovery, first confirm the schema matches `prisma/schema.prisma`, then run:
 
