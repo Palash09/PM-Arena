@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { LogIn, RotateCcw, UserRound } from "lucide-react";
+import { ChevronRight, LogIn, RotateCcw, Settings, UserRound } from "lucide-react";
 
+import { FeedbackForm } from "@/components/feedback-form";
 import { getRankForXp } from "@/components/rank-config";
 import { useAuth } from "@/lib/auth-store";
 import { useProgress } from "@/lib/progress-store";
@@ -69,7 +70,27 @@ export function ProfileClient() {
           <LogIn className="h-4 w-4" />
           Sign in to sync progress
         </Link>
-      ) : null}
+      ) : (
+        <>
+          <Link
+            href="/account"
+            className="flex min-h-16 items-center gap-3 rounded-lg border border-white/10 bg-slate-950/75 px-4 py-3 shadow-card backdrop-blur-xl transition hover:border-mint/30"
+          >
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-mint/25 bg-mint/10">
+              <Settings className="h-5 w-5 text-mint" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-extrabold text-white">Account settings</span>
+              <span className="mt-0.5 block truncate text-xs font-semibold text-slate-400">
+                Signed in as {user.email}
+              </span>
+            </span>
+            <ChevronRight className="h-5 w-5 shrink-0 text-mint" aria-hidden="true" />
+          </Link>
+
+          <FeedbackForm />
+        </>
+      )}
 
       <button
         type="button"

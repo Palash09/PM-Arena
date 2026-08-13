@@ -31,7 +31,7 @@ export function AppShell({ title, compact = false, children }: AppShellProps) {
               </div>
               <Link
                 href="/profile"
-                aria-label="Open user profile"
+                aria-label="Open profile and account"
                 className="grid h-11 w-11 shrink-0 place-items-center rounded-lg border border-mint/30 bg-mint/10 text-mint shadow-[0_0_28px_rgba(125,255,179,0.18)]"
               >
                 <UserRound className="h-6 w-6" />
