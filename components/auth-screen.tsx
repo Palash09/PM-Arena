@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { CheckCircle2, LoaderCircle, Lock, Mail } from "lucide-react";
 
+import { FeedbackForm } from "@/components/feedback-form";
 import { logIn, requestPasswordReset, signUp, useAuth } from "@/lib/auth-store";
 
 type AuthMode = "login" | "signup" | "forgot";
@@ -66,30 +67,33 @@ export function AuthScreen({ initialMode = "login", nextHref = "/", initialError
 
   if (user) {
     return (
-      <section className="rounded-lg border border-mint/25 bg-slate-950/75 p-5 shadow-card backdrop-blur-xl">
-        <div className="grid h-14 w-14 place-items-center rounded-lg border border-mint/30 bg-mint/10">
-          <CheckCircle2 className="h-8 w-8 text-mint" />
-        </div>
-        <h2 className="mt-4 text-2xl font-extrabold text-white">Progress is saved</h2>
-        <p className="mt-2 text-sm font-semibold leading-6 text-slate-200">
-          Signed in as {user.email}. Your onboarding choices, completed scenarios, leader unlocks, and recommendations are now synced to your account.
-        </p>
-        <div className="mt-5 grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={logOut}
-            className="rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm font-extrabold text-white"
-          >
-            Sign out
-          </button>
-          <Link
-            href={nextHref}
-            className="rounded-md bg-mint px-4 py-3 text-center text-sm font-extrabold text-slate-950"
-          >
-            {nextHref === "/onboarding" ? "Continue Setup" : "Go to Hub"}
-          </Link>
-        </div>
-      </section>
+      <div className="space-y-4">
+        <section className="rounded-lg border border-mint/25 bg-slate-950/75 p-5 shadow-card backdrop-blur-xl">
+          <div className="grid h-14 w-14 place-items-center rounded-lg border border-mint/30 bg-mint/10">
+            <CheckCircle2 className="h-8 w-8 text-mint" />
+          </div>
+          <h2 className="mt-4 text-2xl font-extrabold text-white">Progress is saved</h2>
+          <p className="mt-2 text-sm font-semibold leading-6 text-slate-200">
+            Signed in as {user.email}. Your onboarding choices, completed scenarios, leader unlocks, and recommendations are now synced to your account.
+          </p>
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={logOut}
+              className="rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm font-extrabold text-white"
+            >
+              Sign out
+            </button>
+            <Link
+              href={nextHref}
+              className="rounded-md bg-mint px-4 py-3 text-center text-sm font-extrabold text-slate-950"
+            >
+              {nextHref === "/onboarding" ? "Continue Setup" : "Go to Hub"}
+            </Link>
+          </div>
+        </section>
+        <FeedbackForm />
+      </div>
     );
   }
 

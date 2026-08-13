@@ -107,6 +107,12 @@ export async function getDashboardMetrics() {
   const challengeCtas30 = events30.filter(
     (event) => event.eventType === "challenge_cta_clicked"
   );
+  const feedbackSubmissions30 = events30.filter(
+    (event) => event.eventType === "feedback_submitted"
+  );
+  const feedbackFailures30 = events30.filter(
+    (event) => event.eventType === "feedback_delivery_failed"
+  );
   const activatedPlayers30 = events30.filter(
     (event) => event.eventType === "second_scenario_completed"
   );
@@ -119,6 +125,7 @@ export async function getDashboardMetrics() {
   const challengeCompleters30 = uniqueEventActors(challengeCompletions30);
   const challengeSharers30 = uniqueEventActors(challengeShares30);
   const challengeCtaUsers30 = uniqueEventActors(challengeCtas30);
+  const feedbackSubmitters30 = uniqueEventActors(feedbackSubmissions30);
   const activatedPlayerCount30 = uniqueEventActors(activatedPlayers30);
 
   const progressSummaries = savedProgressRows.map((row) => {
@@ -237,16 +244,22 @@ export async function getDashboardMetrics() {
       completers30: challengeCompleters30,
       sharers30: challengeSharers30,
       ctaUsers30: challengeCtaUsers30,
+      visitorToStartRate30: percent(challengeStarters30, uniqueVisitors30),
       startRate30: percent(challengeStarters30, challengeViewers30),
       completionRate30: percent(challengeCompleters30, challengeStarters30),
       shareRate30: percent(challengeSharers30, challengeCompleters30),
       ctaRate30: percent(challengeCtaUsers30, challengeCompleters30)
     },
+    feedbackCards: {
+      submissions30: feedbackSubmissions30.length,
+      submitters30: feedbackSubmitters30,
+      deliveryFailures30: feedbackFailures30.length
+    },
     challengeFunnel: [
-      { label: "Challenge viewers", value: challengeViewers30 },
-      { label: "Decision starters", value: challengeStarters30 },
-      { label: "Completed reveals", value: challengeCompleters30 },
-      { label: "Challenge sharers", value: challengeSharers30 },
+      { label: "Demo viewers", value: challengeViewers30 },
+      { label: "Demo attempts", value: challengeStarters30 },
+      { label: "Demo completions", value: challengeCompleters30 },
+      { label: "Demo shares", value: challengeSharers30 },
       { label: "Full product clicks", value: challengeCtaUsers30 }
     ],
     funnel: [

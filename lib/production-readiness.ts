@@ -7,6 +7,7 @@ const requiredProductionVariables = [
   "RATE_LIMIT_SALT",
   "RESEND_API_KEY",
   "EMAIL_FROM",
+  "FEEDBACK_TO_EMAIL",
   "GOOGLE_CLIENT_ID",
   "GOOGLE_CLIENT_SECRET",
   "NEXT_PUBLIC_APP_URL"

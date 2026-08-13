@@ -52,7 +52,7 @@ export default async function DashboardPage() {
           <p className="eyebrow green">Product Decision League</p>
           <h1>Usage Dashboard</h1>
           <p className="subtitle">
-            Visitor, signup, onboarding, and gameplay signals from the production database.
+            Visitor, demo, signup, feedback, and gameplay signals from the production database.
           </p>
         </div>
         <div className="timestamp">
@@ -86,24 +86,24 @@ export default async function DashboardPage() {
 
       <section className="kpi-grid">
         <KpiCard
-          label="Challenge Starts"
+          label="Demo Attempts"
           value={formatNumber(metrics.challengeCards.starters30)}
-          detail={`${metrics.challengeCards.startRate30}% of challenge viewers`}
+          detail={`${metrics.challengeCards.visitorToStartRate30}% of all visitors`}
         />
         <KpiCard
-          label="Challenge Reveals"
+          label="Demo Completions"
           value={formatNumber(metrics.challengeCards.completers30)}
-          detail={`${metrics.challengeCards.completionRate30}% of decision starters`}
+          detail={`${metrics.challengeCards.completionRate30}% of demo attempts`}
         />
         <KpiCard
-          label="Challenge Share Rate"
-          value={`${metrics.challengeCards.shareRate30}%`}
-          detail={`${formatNumber(metrics.challengeCards.sharers30)} people shared`}
+          label="Feedback Received"
+          value={formatNumber(metrics.feedbackCards.submissions30)}
+          detail={`${formatNumber(metrics.feedbackCards.submitters30)} unique senders, 30d`}
         />
         <KpiCard
-          label="Full Product CTR"
-          value={`${metrics.challengeCards.ctaRate30}%`}
-          detail={`${formatNumber(metrics.challengeCards.ctaUsers30)} reveal-to-product clicks`}
+          label="Feedback Delivery"
+          value={metrics.feedbackCards.deliveryFailures30 ? "Needs attention" : "Healthy"}
+          detail={`${formatNumber(metrics.feedbackCards.deliveryFailures30)} failed sends, 30d`}
         />
       </section>
 
@@ -144,7 +144,7 @@ export default async function DashboardPage() {
           <div className="section-heading">
             <div>
               <p className="eyebrow green">Playable funnel</p>
-              <h2>Challenge distribution loop</h2>
+              <h2>Demo distribution loop</h2>
             </div>
           </div>
           <div className="funnel-list">

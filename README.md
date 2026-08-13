@@ -79,7 +79,7 @@ For free hosted Postgres, Neon is the simplest fit for this repo because the app
 
 Signed-in users use server-side email/password auth with an HTTP-only session cookie. Progress syncs to the `SavedProgress` table; guest users still have browser-local fallback progress.
 
-Password reset emails use Resend. In production, set `RESEND_API_KEY` and `EMAIL_FROM` in Netlify. `EMAIL_FROM` should use a sender/domain verified in Resend. Without `RESEND_API_KEY`, local development returns a development reset link in the UI, but production reset emails are disabled.
+Password resets and signed-in account feedback use Resend. In production, set `RESEND_API_KEY`, `EMAIL_FROM`, and `FEEDBACK_TO_EMAIL` in Netlify. `EMAIL_FROM` should use a sender/domain verified in Resend; `FEEDBACK_TO_EMAIL` is the private inbox that receives player feedback. Without `RESEND_API_KEY`, local development returns a development reset link in the UI, but production email delivery is disabled.
 
 Google login uses a Google OAuth web client. Add the final production domain as an authorized redirect URI in Google Cloud:
 
@@ -107,6 +107,7 @@ This repo is configured for Netlify with `netlify.toml`.
    RATE_LIMIT_SALT="a-long-random-production-secret"
    RESEND_API_KEY="your-resend-api-key"
    EMAIL_FROM="Product Decision League <account@mail.palasharma.com>"
+   FEEDBACK_TO_EMAIL="your-private-support-inbox@example.com"
    GOOGLE_CLIENT_ID="your-google-oauth-client-id"
    GOOGLE_CLIENT_SECRET="your-google-oauth-client-secret"
    NEXT_PUBLIC_APP_URL="https://productdecision.palasharma.com"
@@ -140,7 +141,7 @@ Do not run `npm run db:seed` against the production database after launch. The c
 
 ## Analytics dashboard
 
-The `analytics-dashboard/` folder contains a separate dashboard app for platform metrics. It reads the same production Postgres database but should be hosted as a second private Netlify site, not on the public Product Decision League URL.
+The `analytics-dashboard/` folder contains a separate dashboard app for platform metrics. It reports unique visitors, demo attempts and completions, acquisition attribution, signups, activation, and feedback delivery. It reads the same production Postgres database but should be hosted as a second private Netlify site, not on the public Product Decision League URL.
 
 Deploy recommendation:
 

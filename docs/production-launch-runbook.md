@@ -47,6 +47,7 @@ AI_EVALUATION_MONTHLY_LIMIT=200
 RATE_LIMIT_SALT
 RESEND_API_KEY
 EMAIL_FROM
+FEEDBACK_TO_EMAIL
 GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET
 NEXT_PUBLIC_APP_URL
@@ -99,6 +100,7 @@ The verified sending domain is `mail.palasharma.com`. Use this branded sender:
 
 ```text
 EMAIL_FROM=Product Decision League <account@mail.palasharma.com>
+FEEDBACK_TO_EMAIL=your-private-support-inbox@example.com
 ```
 
 Resend permits any sender address after the sending domain is verified; the address does not need a separate mailbox. For replies and user support, configure `support@palasharma.com` as a Porkbun forwarding address to an inbox you monitor.
