@@ -34,11 +34,24 @@ interface EvaluationRequest {
   reasoning: string;
 }
 
+export interface AnthropicEvaluationAttempt {
+  evaluation: EvaluationResult | null;
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  estimatedCostUsd: number;
+}
+
+function positivePrice(value: string | undefined, fallback: number) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+}
+
 export async function maybeEvaluateWithAnthropic({
   scenario,
   selectedOption,
   reasoning
-}: EvaluationRequest): Promise<EvaluationResult | null> {
+}: EvaluationRequest): Promise<AnthropicEvaluationAttempt | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
 
   if (!apiKey) {
@@ -90,8 +103,9 @@ export async function maybeEvaluateWithAnthropic({
     JSON.stringify(jsonShapeDescription, null, 2)
   ].join("\n");
 
+  const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6";
   const response = await anthropic.messages.create({
-    model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-20250514",
+    model,
     max_tokens: 900,
     temperature: 0.2,
     messages: [
@@ -110,9 +124,26 @@ export async function maybeEvaluateWithAnthropic({
 
   const normalized = text.replace(/^```json\s*|\s*```$/g, "").trim();
 
+  const inputTokens = response.usage.input_tokens;
+  const outputTokens = response.usage.output_tokens;
+  const inputPrice = positivePrice(process.env.ANTHROPIC_INPUT_COST_PER_MILLION_USD, 3);
+  const outputPrice = positivePrice(process.env.ANTHROPIC_OUTPUT_COST_PER_MILLION_USD, 15);
+  const estimatedCostUsd =
+    (inputTokens / 1_000_000) * inputPrice + (outputTokens / 1_000_000) * outputPrice;
+
+  let evaluation: EvaluationResult | null = null;
+
   try {
-    return evaluationSchema.parse(JSON.parse(normalized));
+    evaluation = evaluationSchema.parse(JSON.parse(normalized));
   } catch {
-    return null;
+    // Invalid model output is measured and safely falls back to deterministic scoring.
   }
+
+  return {
+    evaluation,
+    model,
+    inputTokens,
+    outputTokens,
+    estimatedCostUsd
+  };
 }

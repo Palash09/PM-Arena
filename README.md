@@ -100,7 +100,10 @@ This repo is configured for Netlify with `netlify.toml`.
    ```bash
    DATABASE_URL="your-hosted-postgres-connection-string"
    ANTHROPIC_API_KEY="your-anthropic-key"
-   ANTHROPIC_MODEL="claude-sonnet-4-20250514"
+   ANTHROPIC_MODEL="claude-sonnet-4-6"
+   ANTHROPIC_INPUT_COST_PER_MILLION_USD="3"
+   ANTHROPIC_OUTPUT_COST_PER_MILLION_USD="15"
+   ANTHROPIC_MONTHLY_BUDGET_USD="5"
    AI_EVALUATION_HOURLY_LIMIT="3"
    AI_EVALUATION_DAILY_LIMIT="10"
    AI_EVALUATION_MONTHLY_LIMIT="200"

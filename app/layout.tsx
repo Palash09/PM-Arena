@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 
 import { AnalyticsTracker } from "@/components/analytics-tracker";
+import { ErrorMonitor } from "@/components/error-monitor";
 import { getAppOrigin } from "@/lib/app-url";
 import "./globals.css";
 
@@ -50,6 +51,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <AnalyticsTracker />
         </Suspense>
+        <ErrorMonitor />
       </body>
     </html>
   );

@@ -70,7 +70,7 @@ async function extractWithAnthropic(transcript: TranscriptPayload) {
   const AnthropicModule = await import("@anthropic-ai/sdk");
   const anthropic = new AnthropicModule.default({ apiKey });
   const response = await anthropic.messages.create({
-    model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-20250514",
+    model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6",
     max_tokens: 1400,
     temperature: 0.1,
     messages: [

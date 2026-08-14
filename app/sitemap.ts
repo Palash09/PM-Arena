@@ -6,7 +6,16 @@ import { scenarios } from "@/lib/data/seed-data";
 export default function sitemap(): MetadataRoute.Sitemap {
   const origin = getAppOrigin();
   const updatedAt = new Date();
-  const staticPaths = ["", "/scenarios", "/players", "/career"];
+  const staticPaths = [
+    "",
+    "/scenarios",
+    "/players",
+    "/career",
+    "/privacy",
+    "/terms",
+    "/attribution",
+    "/contact"
+  ];
 
   return [
     ...staticPaths.map((path) => ({

@@ -25,6 +25,7 @@ import {
   getCampaignAttribution,
   trackAnalyticsEvent
 } from "@/lib/client-analytics";
+import { LegalFooter } from "@/components/legal-footer";
 import { useProgress, xpForScenarioAttempt } from "@/lib/progress-store";
 import { EvaluationResult, PlayerCard, Scenario } from "@/lib/types";
 
@@ -580,6 +581,7 @@ export function PlayableChallenge({ scenario, player }: PlayableChallengeProps) 
           <p className="text-xs font-semibold leading-5 text-slate-500">
             Based on a real product leadership conversation. Short excerpts are attributed to the featured guest.
           </p>
+          <LegalFooter compact />
         </footer>
       </div>
     </main>

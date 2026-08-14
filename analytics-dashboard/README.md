@@ -10,15 +10,18 @@ This is a separate Next.js app for Product Decision League usage analytics. It s
 - Onboarded users, users with saved decisions, and total synced decisions
 - 14-day visitor/account trend
 - Top pages and recent account/progress activity
+- Sanitized client and server error counts
+- Anthropic evaluations, failures, estimated token spend, and monthly budget usage
 
 ## Required Environment Variables
 
 ```bash
 DATABASE_URL="same-production-postgres-url-used-by-product-decision-league"
 DASHBOARD_PASSWORD="choose-a-private-dashboard-password"
+ANTHROPIC_MONTHLY_BUDGET_USD="5"
 ```
 
-`DASHBOARD_PASSWORD` enables Basic Auth. The username can be anything; the password must match the env var.
+`DASHBOARD_PASSWORD` is required. The dashboard denies access when it is missing. The username can be anything; the password must match the env var.
 
 ## Recommended Hosting
 

@@ -86,6 +86,29 @@ export default async function DashboardPage() {
 
       <section className="kpi-grid">
         <KpiCard
+          label="Anthropic Spend"
+          value={`$${metrics.operationalCards.anthropicSpendThisMonth.toFixed(3)}`}
+          detail={`${metrics.operationalCards.anthropicBudgetUsedPercent}% of $${metrics.operationalCards.anthropicBudgetUsd.toFixed(0)} monthly budget`}
+        />
+        <KpiCard
+          label="AI Evaluations"
+          value={formatNumber(metrics.operationalCards.anthropicAttemptsThisMonth)}
+          detail={`${formatNumber(metrics.operationalCards.anthropicFailures30)} failed calls, 30d`}
+        />
+        <KpiCard
+          label="Client Errors"
+          value={formatNumber(metrics.operationalCards.clientErrors30)}
+          detail="Sanitized browser errors, 30d"
+        />
+        <KpiCard
+          label="Server Errors"
+          value={formatNumber(metrics.operationalCards.serverErrors30)}
+          detail="Tracked API failures, 30d"
+        />
+      </section>
+
+      <section className="kpi-grid">
+        <KpiCard
           label="Demo Attempts"
           value={formatNumber(metrics.challengeCards.starters30)}
           detail={`${metrics.challengeCards.visitorToStartRate30}% of all visitors`}

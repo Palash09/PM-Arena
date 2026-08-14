@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   const password = process.env.DASHBOARD_PASSWORD;
 
   if (!password) {
-    return NextResponse.next();
+    return unauthorized();
   }
 
   const authorization = request.headers.get("authorization");

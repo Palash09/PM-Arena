@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { ScenarioCard } from "@/components/scenario-card";
 import { useProgress } from "@/lib/progress-store";
+import { isFlagshipChallenge } from "@/lib/flagship-challenges";
 import { Scenario } from "@/lib/types";
 
 const pageSize = 3;
@@ -25,8 +26,16 @@ export function ScenarioResults({
 }: ScenarioResultsProps) {
   const { isHydrated, progress } = useProgress();
   const completedScenarioIds = new Set(progress.attempts.map((attempt) => attempt.scenarioId));
-  const orderedScenarios = isHydrated
-    ? [...scenarios].sort((left, right) => {
+  const orderedScenarios = [...scenarios].sort((left, right) => {
+        const leftFlagship = isFlagshipChallenge(left.slug);
+        const rightFlagship = isFlagshipChallenge(right.slug);
+
+        if (leftFlagship !== rightFlagship) {
+          return leftFlagship ? -1 : 1;
+        }
+
+        if (!isHydrated) return 0;
+
         const leftCompleted = completedScenarioIds.has(left.id);
         const rightCompleted = completedScenarioIds.has(right.id);
 
@@ -35,8 +44,7 @@ export function ScenarioResults({
         }
 
         return 0;
-      })
-    : scenarios;
+      });
   const totalPages = Math.max(1, Math.ceil(orderedScenarios.length / pageSize));
   const currentPage = Math.min(activePage, totalPages);
   const visibleScenarios = orderedScenarios.slice(
@@ -72,7 +80,11 @@ export function ScenarioResults({
       <section className="space-y-4">
         {visibleScenarios.length ? (
           visibleScenarios.map((scenario) => (
-            <ScenarioCard key={scenario.id} scenario={scenario} />
+            <ScenarioCard
+              key={scenario.id}
+              scenario={scenario}
+              featured={isFlagshipChallenge(scenario.slug)}
+            />
           ))
         ) : (
           <div className="rounded-lg border border-dashed border-white/15 bg-black/30 p-5 text-base font-bold leading-7 text-slate-200">

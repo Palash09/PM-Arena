@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { reserveAnthropicEvaluation } from "@/lib/ai-usage-limit";
 import { maybeEvaluateWithAnthropic } from "@/lib/anthropic";
+import { recordOperationalEvent } from "@/lib/operational-analytics";
 import {
   getFallbackEvaluation,
   getScenarioById,
@@ -50,14 +51,40 @@ export async function POST(request: Request) {
         throw new Error("Anthropic allowance unavailable");
       }
 
-      aiEvaluation = await maybeEvaluateWithAnthropic({
+      const attempt = await maybeEvaluateWithAnthropic({
         scenario,
         selectedOption,
         reasoning: parsed.data.reasoning
       });
+
+      if (attempt) {
+        aiEvaluation = attempt.evaluation;
+        await recordOperationalEvent({
+          eventType: "anthropic_evaluation_completed",
+          path: "/api/game/evaluate",
+          anonymousId: parsed.data.anonymousId,
+          metadata: {
+            model: attempt.model,
+            scenarioId: scenario.id,
+            inputTokens: attempt.inputTokens,
+            outputTokens: attempt.outputTokens,
+            estimatedCostUsd: attempt.estimatedCostUsd,
+            validEvaluation: Boolean(attempt.evaluation)
+          }
+        });
+      }
     } catch (error) {
       if (canUseAnthropic) {
         console.error("AI evaluation failed; using rules-based fallback.", error);
+        await recordOperationalEvent({
+          eventType: "anthropic_evaluation_failed",
+          path: "/api/game/evaluate",
+          anonymousId: parsed.data.anonymousId,
+          metadata: {
+            scenarioId: parsed.data.scenarioId,
+            errorName: error instanceof Error ? error.name : "UnknownError"
+          }
+        });
       }
     }
 
@@ -75,6 +102,14 @@ export async function POST(request: Request) {
     return NextResponse.json(evaluation);
   } catch (error) {
     console.error("Scenario evaluation failed.", error);
+    await recordOperationalEvent({
+      eventType: "server_error",
+      path: "/api/game/evaluate",
+      metadata: {
+        operation: "scenario_evaluation",
+        errorName: error instanceof Error ? error.name : "UnknownError"
+      }
+    });
 
     return NextResponse.json(
       {

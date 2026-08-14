@@ -6,6 +6,7 @@ coverage
 dist
 tmp
 *.log
+*.tsbuildinfo
 prisma/dev.db
 
 .DS_Store

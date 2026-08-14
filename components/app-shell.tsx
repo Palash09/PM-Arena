@@ -3,6 +3,7 @@ import Link from "next/link";
 import { UserRound } from "lucide-react";
 
 import { BottomNav } from "@/components/bottom-nav";
+import { LegalFooter } from "@/components/legal-footer";
 
 interface AppShellProps {
   title: string;
@@ -39,6 +40,7 @@ export function AppShell({ title, compact = false, children }: AppShellProps) {
             </div>
           </header>
           <main className="space-y-4">{children}</main>
+          <LegalFooter />
         </div>
         <BottomNav />
       </div>

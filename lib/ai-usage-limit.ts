@@ -7,10 +7,22 @@ import { getCurrentAccount } from "@/lib/server-auth";
 const DEFAULT_HOURLY_LIMIT = 3;
 const DEFAULT_DAILY_LIMIT = 10;
 const DEFAULT_MONTHLY_LIMIT = 200;
+const DEFAULT_MONTHLY_BUDGET_USD = 5;
 
 function positiveInteger(value: string | undefined, fallback: number) {
   const parsed = Number(value);
   return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function positiveNumber(value: string | undefined, fallback: number) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function metadataCost(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return 0;
+  const cost = (value as Record<string, unknown>).estimatedCostUsd;
+  return typeof cost === "number" && Number.isFinite(cost) ? cost : 0;
 }
 
 function startOfUtcHour(date: Date) {
@@ -92,6 +104,25 @@ export async function reserveAnthropicEvaluation(request: Request, anonymousId?:
       process.env.AI_EVALUATION_MONTHLY_LIMIT,
       DEFAULT_MONTHLY_LIMIT
     );
+    const monthlyBudgetUsd = positiveNumber(
+      process.env.ANTHROPIC_MONTHLY_BUDGET_USD,
+      DEFAULT_MONTHLY_BUDGET_USD
+    );
+    const monthlyUsageEvents = await prisma.analyticsEvent.findMany({
+      where: {
+        eventType: "anthropic_evaluation_completed",
+        createdAt: { gte: monthStart }
+      },
+      select: { metadata: true }
+    });
+    const estimatedMonthlySpend = monthlyUsageEvents.reduce(
+      (total, event) => total + metadataCost(event.metadata),
+      0
+    );
+
+    if (estimatedMonthlySpend >= monthlyBudgetUsd) {
+      return false;
+    }
 
     await prisma.$transaction(async (transaction) => {
       await transaction.aiUsageWindow.deleteMany({

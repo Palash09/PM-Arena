@@ -41,6 +41,12 @@ function metadataValue(value: unknown, key: string) {
   return typeof candidate === "string" && candidate.trim() ? candidate : undefined;
 }
 
+function metadataNumber(value: unknown, key: string) {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return 0;
+  const candidate = (value as Record<string, unknown>)[key];
+  return typeof candidate === "number" && Number.isFinite(candidate) ? candidate : 0;
+}
+
 function uniqueEventActors(
   events: Array<{ id: string; anonymousId: string | null; userId: string | null }>
 ) {
@@ -60,6 +66,9 @@ function referrerHost(referrer: string | null) {
 export async function getDashboardMetrics() {
   const last30 = daysAgo(30);
   const last14 = daysAgo(13);
+  const monthStart = new Date();
+  monthStart.setUTCDate(1);
+  monthStart.setUTCHours(0, 0, 0, 0);
 
   const [
     events30,
@@ -116,6 +125,24 @@ export async function getDashboardMetrics() {
   const activatedPlayers30 = events30.filter(
     (event) => event.eventType === "second_scenario_completed"
   );
+  const clientErrors30 = events30.filter((event) =>
+    ["client_error", "client_render_error"].includes(event.eventType)
+  );
+  const serverErrors30 = events30.filter((event) => event.eventType === "server_error");
+  const anthropicAttempts30 = events30.filter(
+    (event) => event.eventType === "anthropic_evaluation_completed"
+  );
+  const anthropicFailures30 = events30.filter(
+    (event) => event.eventType === "anthropic_evaluation_failed"
+  );
+  const anthropicAttemptsThisMonth = anthropicAttempts30.filter(
+    (event) => event.createdAt >= monthStart
+  );
+  const anthropicSpendThisMonth = anthropicAttemptsThisMonth.reduce(
+    (total, event) => total + metadataNumber(event.metadata, "estimatedCostUsd"),
+    0
+  );
+  const anthropicBudgetUsd = Number(process.env.ANTHROPIC_MONTHLY_BUDGET_USD || 5);
   const uniqueVisitors30 = new Set(
     pageViews30.map((event) => event.anonymousId || event.userId).filter(Boolean)
   ).size;
@@ -254,6 +281,15 @@ export async function getDashboardMetrics() {
       submissions30: feedbackSubmissions30.length,
       submitters30: feedbackSubmitters30,
       deliveryFailures30: feedbackFailures30.length
+    },
+    operationalCards: {
+      clientErrors30: clientErrors30.length,
+      serverErrors30: serverErrors30.length,
+      anthropicAttemptsThisMonth: anthropicAttemptsThisMonth.length,
+      anthropicFailures30: anthropicFailures30.length,
+      anthropicSpendThisMonth,
+      anthropicBudgetUsd,
+      anthropicBudgetUsedPercent: percent(anthropicSpendThisMonth, anthropicBudgetUsd)
     },
     challengeFunnel: [
       { label: "Demo viewers", value: challengeViewers30 },
