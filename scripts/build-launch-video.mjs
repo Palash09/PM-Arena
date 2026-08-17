@@ -61,8 +61,8 @@ const scenes = [
   },
   {
     name: "reward",
-    image: "06-coaching.jpg",
-    duration: 4,
+    image: "07-leaders.jpg",
+    duration: 4.5,
     overlay: lowerThird(
       "BUILD PRODUCT JUDGMENT",
       "UNLOCK LEADERS AS YOU PLAY",
@@ -71,9 +71,8 @@ const scenes = [
   {
     name: "cta",
     image: "01-entry.jpg",
-    duration: 4,
-    treatment: "blurred",
-    overlay: ctaOverlay(),
+    duration: 5,
+    overlay: finalEntryOverlay(),
   },
 ];
 
@@ -270,15 +269,13 @@ function lowerThird(kicker, title) {
   `);
 }
 
-function ctaOverlay() {
+function finalEntryOverlay() {
   return svgShell(`
-    <rect width="1080" height="1920" fill="#020713" fill-opacity="0.7"/>
-    <text x="540" y="250" text-anchor="middle" fill="#72F1B8" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="42" font-weight="700" letter-spacing="6">PRODUCT DECISION LEAGUE</text>
-    <text x="540" y="710" text-anchor="middle" fill="#FFFFFF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="102" font-weight="700">READY TO MAKE</text>
-    <text x="540" y="850" text-anchor="middle" fill="#FFD166" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="116" font-weight="700">THE CALL?</text>
-    <rect x="140" y="1050" width="800" height="164" rx="36" fill="#72F1B8"/>
-    <text x="540" y="1152" text-anchor="middle" fill="#03100C" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="50" font-weight="700" letter-spacing="1">PLAY THE 2-MINUTE CHALLENGE</text>
-    <text x="540" y="1372" text-anchor="middle" fill="#FFFFFF" font-family="SF Pro Display, Arial, sans-serif" font-size="38" font-weight="700">productdecision.palasharma.com</text>
-    <text x="540" y="1730" text-anchor="middle" fill="#C8D0DC" font-family="SF Pro Display, Arial, sans-serif" font-size="30" font-weight="600">What felt least credible or most confusing?</text>
+    <rect x="180" y="54" width="720" height="120" rx="28" fill="url(#shade)" stroke="#72F1B8" stroke-opacity="0.45" stroke-width="2"/>
+    <text x="540" y="99" text-anchor="middle" fill="#E3E8EF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="27" font-weight="700" letter-spacing="5">THE LEAGUE IS OPEN</text>
+    <text x="540" y="151" text-anchor="middle" fill="#FFD166" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="48" font-weight="700" letter-spacing="1">READY TO MAKE THE CALL?</text>
+    <rect x="180" y="1798" width="720" height="104" rx="26" fill="url(#shade)" stroke="#72F1B8" stroke-opacity="0.42" stroke-width="2"/>
+    <text x="540" y="1840" text-anchor="middle" fill="#E3E8EF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="24" font-weight="700" letter-spacing="4">PLAY THE 2-MINUTE CHALLENGE</text>
+    <text x="540" y="1881" text-anchor="middle" fill="#FFD166" font-family="SF Pro Display, Arial, sans-serif" font-size="32" font-weight="700">productdecision.palasharma.com</text>
   `);
 }

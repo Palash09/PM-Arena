@@ -18,7 +18,7 @@ Requirements: Node.js, the repository dependencies, and `ffmpeg` with H.264 supp
 docs/distribution/video/product-decision-league-linkedin-vertical.mp4
 ```
 
-The master is 1080x1920, 30 fps, approximately 29 seconds, caption-first, and intentionally silent. Add licensed music or a voiceover only in a derivative export so this reusable master remains clean.
+The master is 1080x1920, 30 fps, approximately 31 seconds, caption-first, and intentionally silent. The unlock scene uses the production Squad screen, and the final scene returns to the complete app entry screen. Add licensed music or a voiceover only in a derivative export so this reusable master remains clean.
 
 LinkedIn cover:
 
