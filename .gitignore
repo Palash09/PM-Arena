@@ -22,3 +22,6 @@ lennys-newsletterpodcastdata-starter/
 
 # Local Netlify folder
 .netlify
+
+# Generated local render cache
+.tmp/

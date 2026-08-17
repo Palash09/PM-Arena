@@ -16,13 +16,37 @@ Tracked URLs are maintained in `docs/distribution/alpha-links.csv`.
 
 | Day | Primary action | Objective | Link policy |
 | --- | --- | --- | --- |
-| 1 | LinkedIn post 1: strategy challenge | First qualified flagship starts | Strategy UTM link |
-| 2 | Add three value-first replies to current PM discussions | Establish credibility and learn language | No product link |
+| 1 | LinkedIn launch post with the vertical mobile demo | Introduce the product and generate the first qualified starts | Launch-video UTM link |
+| 2 | LinkedIn post 1: strategy challenge; add three value-first replies | Give the audience a concrete decision prompt and learn their language | Strategy UTM in the post; no links in unsolicited replies |
 | 3 | X prompt 1: prioritization | Generate direct decision responses | Prioritization UTM in follow-up reply |
 | 4 | Reply to every substantive response; ask one credibility question | Qualitative learning | Link only when requested and relevant |
 | 5 | LinkedIn post 2: growth challenge | Test a second acquisition angle | Growth UTM link |
 | 6 | X prompt 2: strategy | Compare engagement across decision types | Strategy UTM in follow-up reply |
 | 7 | Eligible `r/SideProject` discussion and alpha readout | Reach builders/aspiring PMs and collect feedback | One disclosed Reddit UTM link |
+
+## LinkedIn launch video: knowing is not deciding
+
+I have listened to hundreds of hours of product conversations. The problem was never finding another framework.
+
+The problem was practicing the decision before the real meeting.
+
+So I built **Product Decision League**: a mobile-first decision game based on real situations faced by product leaders.
+
+You get the context, make the call, defend the tradeoff, and then receive AI coaching alongside the short real-world reveal.
+
+The first public challenge is based on Tomer Cohen's experience shaping the purpose of LinkedIn's feed. It takes about two minutes, requires no login, and I am explicitly looking for criticism:
+
+**What felt least credible or most confusing?**
+
+Play the challenge:
+https://productdecision.palasharma.com/challenge/linkedin-feed-purpose?utm_source=linkedin&utm_medium=organic_video&utm_campaign=alpha_launch_w1&utm_content=linkedin_launch_video
+
+#productmanagement #productstrategy #buildinpublic
+
+Attach:
+
+- `docs/distribution/video/product-decision-league-linkedin-vertical.mp4`
+- Cover: `docs/distribution/video/product-decision-league-linkedin-cover.jpg`
 
 ## LinkedIn post 1: knowing is not deciding
 
