@@ -1,6 +1,10 @@
 # Product Decision League Analytics Dashboard
 
-This is a separate Next.js app for Product Decision League usage analytics. It should be deployed as its own private Netlify site, not under the public application domain.
+This is a separate Next.js app for Product Decision League usage analytics. It is deployed as its own private Netlify site, not under the public application domain.
+
+Production dashboard: https://product-decision-league-analytics.netlify.app
+
+Netlify builds this app from the `analytics-dashboard` base directory in the main repository. HTTP Basic Auth is enforced by middleware and fails closed when `DASHBOARD_PASSWORD` is missing.
 
 ## Metrics Included
 
@@ -23,22 +27,13 @@ ANTHROPIC_MONTHLY_BUDGET_USD="5"
 
 `DASHBOARD_PASSWORD` is required. The dashboard denies access when it is missing. The username can be anything; the password must match the env var.
 
-## Recommended Hosting
+## Hosting Configuration
 
-Use a second Netlify site connected to the same GitHub repo:
+The separate Netlify site is connected to the same GitHub repo with these settings:
 
-1. Netlify → Add new site → Import from Git.
-2. Select the same GitHub repo.
-3. Set the base directory to `analytics-dashboard`.
-4. Build command: `npm run build`.
-5. Publish directory: `analytics-dashboard/.next` if Netlify asks from repo root, or `.next` when base directory is set.
-6. Add `DATABASE_URL` and `DASHBOARD_PASSWORD`.
-7. Deploy.
+1. Base directory: `analytics-dashboard`.
+2. Build command: `npm run build`.
+3. Publish directory: `analytics-dashboard/.next` in the site settings.
+4. Production variables: `DATABASE_URL`, `DASHBOARD_PASSWORD`, and `ANTHROPIC_MONTHLY_BUDGET_USD`.
 
-Recommended dashboard URL shape:
-
-```text
-https://product-decision-league-analytics.netlify.app
-```
-
-You can also host it on Vercel as a separate project using `analytics-dashboard` as the root directory. Netlify is simpler here because the main app is already there.
+The dashboard remains on its Netlify URL so product analytics are not exposed under the public application domain.

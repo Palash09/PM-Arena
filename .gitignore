@@ -19,3 +19,6 @@ ChatGPT Image *.png
 Screenshot *.png
 RORK-Max_PM-Decision/
 lennys-newsletterpodcastdata-starter/
+
+# Local Netlify folder
+.netlify
