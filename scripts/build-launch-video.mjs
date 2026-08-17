@@ -57,7 +57,7 @@ const scenes = [
     name: "score",
     image: "05-score-top.jpg",
     duration: 5,
-    overlay: topTag("AI COACHING", "REAL-WORLD REVEAL"),
+    overlay: topTag("DECISION BREAKDOWN", "REAL-WORLD REVEAL"),
   },
   {
     name: "reward",
@@ -249,7 +249,7 @@ function hookOverlay() {
     <rect x="410" y="850" width="260" height="8" rx="4" fill="#FFD166"/>
     <text x="540" y="1090" text-anchor="middle" fill="#FFFFFF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="96" font-weight="700">CAN YOU MAKE</text>
     <text x="540" y="1240" text-anchor="middle" fill="#FFD166" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="138" font-weight="700">THE CALL?</text>
-    <text x="540" y="1730" text-anchor="middle" fill="#C8D0DC" font-family="SF Pro Display, Arial, sans-serif" font-size="31" font-weight="600" letter-spacing="2">REAL SCENARIOS  /  AI COACHING  /  2 MINUTES</text>
+    <text x="540" y="1730" text-anchor="middle" fill="#C8D0DC" font-family="SF Pro Display, Arial, sans-serif" font-size="31" font-weight="600" letter-spacing="2">REAL SCENARIOS  /  EXPERT REVEALS  /  2 MINUTES</text>
   `);
 }
 
