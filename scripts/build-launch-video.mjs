@@ -16,6 +16,10 @@ const outputPath = path.join(
 const width = 1080;
 const height = 1920;
 const fps = 30;
+const phoneWidth = 720;
+const phoneHeight = 1561;
+const phoneLeft = 180;
+const phoneTop = 210;
 
 const scenes = [
   {
@@ -86,23 +90,38 @@ for (const [index, scene] of scenes.entries()) {
     `${String(index).padStart(2, "0")}-${scene.name}.mp4`,
   );
 
-  let background = sharp(path.join(captureDir, scene.image))
-    .extract({ left: 437, top: 0, width: 405, height: 720 })
-    .resize(width, height, { fit: "fill" });
+  const capturePath = path.join(captureDir, scene.image);
+  const background = sharp(capturePath)
+    .resize(width, height, { fit: "cover" })
+    .blur(scene.treatment === "blurred" ? 10 : 28)
+    .modulate({
+      brightness: scene.treatment === "blurred" ? 0.58 : 0.38,
+      saturation: scene.treatment === "blurred" ? 0.9 : 0.72,
+    });
 
-  if (scene.treatment === "blurred") {
-    background = background.blur(10).modulate({ brightness: 0.58 });
-  }
+  const composites = scene.treatment === "blurred"
+    ? [{ input: Buffer.from(scene.overlay), top: 0, left: 0 }]
+    : [
+        { input: Buffer.from(safeFrameBackground()), top: 0, left: 0 },
+        { input: Buffer.from(deviceShadow()), top: 0, left: 0 },
+        {
+          input: await roundedPhoneCapture(capturePath),
+          top: phoneTop,
+          left: phoneLeft,
+        },
+        { input: Buffer.from(deviceBorder()), top: 0, left: 0 },
+        { input: Buffer.from(scene.overlay), top: 0, left: 0 },
+      ];
 
   await background
-    .composite([{ input: Buffer.from(scene.overlay), top: 0, left: 0 }])
+    .composite(composites)
     .png()
     .toFile(stillPath);
 
   const frames = Math.round(scene.duration * fps);
   const fadeOutAt = Math.max(0, scene.duration - 0.3).toFixed(2);
   const filter = [
-    `zoompan=z='min(zoom+0.00022,1.025)'`,
+    `zoompan=z='min(zoom+0.00004,1.006)'`,
     `x='iw/2-(iw/zoom/2)'`,
     `y='ih/2-(ih/zoom/2)'`,
     `d=${frames}`,
@@ -184,32 +203,70 @@ function svgShell(content) {
   `;
 }
 
+async function roundedPhoneCapture(capturePath) {
+  const mask = Buffer.from(`
+    <svg width="${phoneWidth}" height="${phoneHeight}" xmlns="http://www.w3.org/2000/svg">
+      <rect width="${phoneWidth}" height="${phoneHeight}" rx="48" fill="#FFFFFF"/>
+    </svg>
+  `);
+
+  return sharp(capturePath)
+    .resize(phoneWidth, phoneHeight, { fit: "fill" })
+    .ensureAlpha()
+    .composite([{ input: mask, blend: "dest-in" }])
+    .png()
+    .toBuffer();
+}
+
+function safeFrameBackground() {
+  return svgShell(`
+    <rect width="1080" height="1920" fill="#020713" fill-opacity="0.68"/>
+    <circle cx="80" cy="420" r="330" fill="#72F1B8" fill-opacity="0.045"/>
+    <circle cx="1020" cy="1450" r="420" fill="#FFD166" fill-opacity="0.035"/>
+    <path d="M0 176 L1080 176" stroke="#72F1B8" stroke-opacity="0.12"/>
+    <path d="M0 1798 L1080 1798" stroke="#FFD166" stroke-opacity="0.12"/>
+  `);
+}
+
+function deviceShadow() {
+  return svgShell(`
+    <rect x="158" y="188" width="764" height="1605" rx="68" fill="#000000" fill-opacity="0.58"/>
+    <rect x="170" y="200" width="740" height="1581" rx="58" fill="#08101D" stroke="#2B3C4F" stroke-width="4"/>
+  `);
+}
+
+function deviceBorder() {
+  return svgShell(`
+    <rect x="176" y="206" width="728" height="1569" rx="54" fill="none" stroke="#72F1B8" stroke-opacity="0.32" stroke-width="3"/>
+  `);
+}
+
 function hookOverlay() {
   return svgShell(`
     <rect width="1080" height="1920" fill="#020713" fill-opacity="0.62"/>
     <text x="540" y="210" text-anchor="middle" fill="#72F1B8" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="42" font-weight="700" letter-spacing="6">PRODUCT DECISION LEAGUE</text>
-    <text x="540" y="635" text-anchor="middle" fill="#FFFFFF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="88" font-weight="700" letter-spacing="2">YOU'VE LISTENED TO</text>
-    <text x="540" y="770" text-anchor="middle" fill="#FFFFFF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="132" font-weight="700">100 PM PODCASTS.</text>
-    <rect x="390" y="860" width="300" height="8" rx="4" fill="#72F1B8"/>
-    <text x="540" y="1100" text-anchor="middle" fill="#FFFFFF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="108" font-weight="700">CAN YOU MAKE</text>
-    <text x="540" y="1260" text-anchor="middle" fill="#72F1B8" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="154" font-weight="700">THE CALL?</text>
+    <text x="540" y="635" text-anchor="middle" fill="#FFFFFF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="78" font-weight="700" letter-spacing="2">YOU'VE LISTENED TO</text>
+    <text x="540" y="760" text-anchor="middle" fill="#FFFFFF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="112" font-weight="700">100 PM PODCASTS.</text>
+    <rect x="410" y="850" width="260" height="8" rx="4" fill="#FFD166"/>
+    <text x="540" y="1090" text-anchor="middle" fill="#FFFFFF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="96" font-weight="700">CAN YOU MAKE</text>
+    <text x="540" y="1240" text-anchor="middle" fill="#FFD166" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="138" font-weight="700">THE CALL?</text>
     <text x="540" y="1730" text-anchor="middle" fill="#C8D0DC" font-family="SF Pro Display, Arial, sans-serif" font-size="31" font-weight="600" letter-spacing="2">REAL SCENARIOS  /  AI COACHING  /  2 MINUTES</text>
   `);
 }
 
 function topTag(kicker, title) {
   return svgShell(`
-    <rect x="52" y="54" width="976" height="196" rx="30" fill="url(#shade)" stroke="#72F1B8" stroke-opacity="0.46" stroke-width="2"/>
-    <text x="98" y="128" fill="#72F1B8" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="34" font-weight="700" letter-spacing="5">${kicker}</text>
-    <text x="98" y="205" fill="#FFFFFF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="68" font-weight="700" letter-spacing="1">${title}</text>
+    <rect x="180" y="54" width="720" height="120" rx="28" fill="url(#shade)" stroke="#FFD166" stroke-opacity="0.45" stroke-width="2"/>
+    <text x="540" y="99" text-anchor="middle" fill="#E3E8EF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="27" font-weight="700" letter-spacing="5">${kicker}</text>
+    <text x="540" y="151" text-anchor="middle" fill="#FFD166" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="48" font-weight="700" letter-spacing="1">${title}</text>
   `);
 }
 
 function lowerThird(kicker, title) {
   return svgShell(`
-    <rect x="52" y="1644" width="976" height="220" rx="34" fill="url(#shade)" stroke="#72F1B8" stroke-opacity="0.4" stroke-width="2"/>
-    <text x="98" y="1726" fill="#72F1B8" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="34" font-weight="700" letter-spacing="5">${kicker}</text>
-    <text x="98" y="1815" fill="#FFFFFF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="62" font-weight="700" letter-spacing="1">${title}</text>
+    <rect x="180" y="1798" width="720" height="104" rx="26" fill="url(#shade)" stroke="#FFD166" stroke-opacity="0.38" stroke-width="2"/>
+    <text x="540" y="1838" text-anchor="middle" fill="#E3E8EF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="24" font-weight="700" letter-spacing="4">${kicker}</text>
+    <text x="540" y="1880" text-anchor="middle" fill="#FFD166" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="39" font-weight="700" letter-spacing="1">${title}</text>
   `);
 }
 
@@ -217,11 +274,11 @@ function ctaOverlay() {
   return svgShell(`
     <rect width="1080" height="1920" fill="#020713" fill-opacity="0.7"/>
     <text x="540" y="250" text-anchor="middle" fill="#72F1B8" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="42" font-weight="700" letter-spacing="6">PRODUCT DECISION LEAGUE</text>
-    <text x="540" y="710" text-anchor="middle" fill="#FFFFFF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="116" font-weight="700">READY TO MAKE</text>
-    <text x="540" y="855" text-anchor="middle" fill="#FFFFFF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="116" font-weight="700">THE CALL?</text>
-    <rect x="92" y="1050" width="896" height="174" rx="36" fill="#72F1B8"/>
-    <text x="540" y="1158" text-anchor="middle" fill="#03100C" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="58" font-weight="700" letter-spacing="1">PLAY THE 2-MINUTE CHALLENGE</text>
-    <text x="540" y="1372" text-anchor="middle" fill="#FFFFFF" font-family="SF Pro Display, Arial, sans-serif" font-size="42" font-weight="700">productdecision.palasharma.com</text>
+    <text x="540" y="710" text-anchor="middle" fill="#FFFFFF" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="102" font-weight="700">READY TO MAKE</text>
+    <text x="540" y="850" text-anchor="middle" fill="#FFD166" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="116" font-weight="700">THE CALL?</text>
+    <rect x="140" y="1050" width="800" height="164" rx="36" fill="#72F1B8"/>
+    <text x="540" y="1152" text-anchor="middle" fill="#03100C" font-family="DIN Condensed, Arial Narrow, sans-serif" font-size="50" font-weight="700" letter-spacing="1">PLAY THE 2-MINUTE CHALLENGE</text>
+    <text x="540" y="1372" text-anchor="middle" fill="#FFFFFF" font-family="SF Pro Display, Arial, sans-serif" font-size="38" font-weight="700">productdecision.palasharma.com</text>
     <text x="540" y="1730" text-anchor="middle" fill="#C8D0DC" font-family="SF Pro Display, Arial, sans-serif" font-size="30" font-weight="600">What felt least credible or most confusing?</text>
   `);
 }
