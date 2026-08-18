@@ -26,20 +26,25 @@ Tracked URLs are maintained in `docs/distribution/alpha-links.csv`.
 
 ## LinkedIn launch video: knowing is not deciding
 
-I have listened to hundreds of hours of product conversations. The problem was never finding another framework.
+Football taught me that matches are won by decisions under pressure.
 
-The problem was practicing the decision before the real meeting.
+Product management taught me the same thing.
 
-So I built **Product Decision League**: a mobile-first decision game based on real situations faced by product leaders.
+I love both, so I built **Product Decision League**: a mobile-first game where PMs practice real product decisions, defend trade-offs, and compare their call with what leaders actually did.
 
-You get the context, make the call, defend the tradeoff, and then receive AI coaching alongside the short real-world reveal.
+At a time when AI helps everyone build faster, judgment is the advantage: choosing the right problem, making the trade-off, and standing behind the decision.
 
-The first public challenge is based on Tomer Cohen's experience shaping the purpose of LinkedIn's feed. It takes about two minutes, requires no login, and I am explicitly looking for criticism:
+The scenarios are inspired by product-leader conversations from **Lenny's Podcast**. Thank you, **Lenny Rachitsky**, for building such a rich source of product thinking.
 
-**What felt least credible or most confusing?**
+The first challenge draws from Tomer Cohen's experience shaping LinkedIn's feed. It takes two minutes and requires no login.
 
-Play the challenge:
+**Make the call:**
 https://productdecision.palasharma.com/challenge/linkedin-feed-purpose?utm_source=linkedin&utm_medium=organic_video&utm_campaign=alpha_launch_w1&utm_content=linkedin_launch_video
+
+**Explore the league:**
+https://productdecision.palasharma.com/?utm_source=linkedin&utm_medium=organic_video&utm_campaign=alpha_launch_w1&utm_content=linkedin_launch_app
+
+Then tell me: **What felt least credible or most confusing?**
 
 #productmanagement #productstrategy #buildinpublic
 
