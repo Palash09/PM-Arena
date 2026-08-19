@@ -176,7 +176,7 @@ If you try one three-minute scenario, I would value an answer to one question:
 
 I am the builder. Alpha link: https://productdecision.palasharma.com/challenge/linkedin-feed-purpose?utm_source=reddit&utm_medium=community_post&utm_campaign=alpha_launch_w1&utm_content=sideproject_strategy
 
-Tech stack for anyone interested: Next.js, TypeScript, Postgres/Prisma, Anthropic for bounded coaching, and rules-based fallback scoring.
+Tech stack for anyone interested: Next.js, TypeScript, Postgres/Prisma, Anthropic for bounded evaluation, and rules-based fallback scoring.
 
 ## Daily alpha review
 
