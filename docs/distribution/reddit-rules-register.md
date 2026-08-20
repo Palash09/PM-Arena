@@ -1,10 +1,10 @@
 # Reddit Community Rules Register
 
-Checked August 14, 2026. Recheck the official live rules and current pinned threads immediately before posting because moderator policies can change without notice.
+Checked August 20, 2026. Recheck the official live rules and current pinned threads immediately before posting because moderator policies can change without notice.
 
 | Community | Audience fit | Current promotion rule | Eligible action | Status |
 | --- | --- | --- | --- | --- |
-| [r/ProductManagement rules](https://www.reddit.com/r/ProductManagement/about/rules) | Highest PM relevance | No self-promotion or links to your own material; use the designated Friday Show and Tell exception when currently available | Value-first comments with no product mention; verify Friday thread separately | Replies only |
+| [r/ProductManagement rules](https://www.reddit.com/r/ProductManagement/about/rules) | Highest PM relevance | No self-promotion in the regular feed; the recurring Friday Show and Tell thread permits relevant creative PM products with context and a free version | Use only the newest Friday thread and recheck its instructions before commenting | Eligible Friday thread only |
 | [r/startups rules](https://www.reddit.com/r/startups/about/rules) | Founders and early product operators | No direct promotion in regular posts/comments; startup promotion belongs in the designated thread | Use the current [Share Your Startup quarterly thread](https://www.reddit.com/r/startups/comments/1utpfsi/share_your_startup_quarterly_post/) and follow its template | Eligible thread only |
 | [r/SideProject rules](https://www.reddit.com/r/SideProject/about/rules) | Builders and aspiring PMs | Project sharing is the community purpose; no affiliate/referral spam or context-free link drops | Substantive builder story, clear disclosure, one product link, specific feedback question | Eligible |
 | [r/SaaS rules](https://www.reddit.com/r/SaaS/about/rules) | SaaS operators and growth practitioners | Limited self-promotion: one mention every 60 days; links require community karma; polls/surveys need approval | Participate without links until account eligibility is confirmed | Hold |
@@ -13,7 +13,7 @@ Checked August 14, 2026. Recheck the official live rules and current pinned thre
 
 ## Evidence notes
 
-- `r/ProductManagement` removals explicitly state that self-promotion includes your own material and your employer's material. Treat discussion replies as trust-building, never acquisition links.
+- `r/ProductManagement` removals explicitly state that self-promotion includes your own material and your employer's material. The latest verified [Friday Show and Tell thread](https://www.reddit.com/r/ProductManagement/comments/1vnyxnt/friday_show_and_tell/) provides a narrow exception for contextual, relevant products with a free version.
 - `r/startups` currently provides a sanctioned quarterly startup thread with a required template; regular-feed promotion remains prohibited.
 - `r/SaaS` moderators announced the once-per-60-days rule in April 2026 and clarified link-karma and survey approval requirements in June 2026.
 - `r/SideProject` is the safest first standalone Reddit post because the product is personally built and the draft provides implementation context plus a narrow feedback request.
